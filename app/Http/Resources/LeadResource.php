@@ -35,14 +35,13 @@ final class LeadResource extends JsonResource
                 'description' => $this->website_type->description(),
                 'icon' => $this->website_type->icon(),
             ],
-            'platform' => $this->platform,
-            'platform_id' => $this->platform_id,
-            'platform_info' => $this->whenLoaded('platform', function () {
+            'platform' => $this->when($this->platform, function () {
                 return [
                     'id' => $this->platform->id,
                     'name' => $this->platform->name,
                     'slug' => $this->platform->slug,
                     'description' => $this->platform->description,
+                    'website_types' => $this->platform->website_types,
                 ];
             }),
             'submitted_at' => $this->submitted_at?->toISOString(),

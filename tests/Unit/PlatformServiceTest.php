@@ -77,8 +77,8 @@ class PlatformServiceTest extends TestCase
             ->with('platforms:website_type:ecommerce', Mockery::any(), Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
-                // Verify cache TTL is 24 hours
-                $this->assertTrue($ttl->diffInHours(now()) === 24);
+                // Verify cache TTL is 24 hours in seconds
+                $this->assertEquals(24 * 60 * 60, $ttl);
                 return $callback();
             });
 
@@ -129,8 +129,8 @@ class PlatformServiceTest extends TestCase
             ->with('platforms:all_active', Mockery::any(), Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
-                // Verify cache TTL is 24 hours
-                $this->assertTrue($ttl->diffInHours(now()) === 24);
+                // Verify cache TTL is 24 hours in seconds
+                $this->assertEquals(24 * 60 * 60, $ttl);
                 return $callback();
             });
 

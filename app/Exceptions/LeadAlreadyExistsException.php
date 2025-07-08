@@ -6,20 +6,11 @@ namespace App\Exceptions;
 
 use Exception;
 
-/**
- * Exception thrown when attempting to create a lead with an email that already exists.
- */
-final class LeadAlreadyExistsException extends Exception
+class LeadAlreadyExistsException extends Exception
 {
-    /**
-     * Create a new exception instance.
-     * 
-     * @param string $message The exception message
-     * @param int $code The exception code
-     * @param \Throwable|null $previous The previous exception
-     */
-    public function __construct(string $message = 'Lead already exists', int $code = 409, ?\Throwable $previous = null)
+    public function __construct(string $email, int $leadId)
     {
-        parent::__construct($message, $code, $previous);
+        $message = "A lead with email '{$email}' already exists (ID: {$leadId})";
+        parent::__construct($message);
     }
 } 

@@ -36,6 +36,9 @@ final class LeadController extends Controller
         try {
             $leadDTO = LeadDTO::fromArray($request->validated());
             $lead = $this->leadService->createLead($leadDTO);
+            
+            // Load the platform relationship if it exists
+            $lead->load('platform');
 
             return response()->json([
                 'success' => true,

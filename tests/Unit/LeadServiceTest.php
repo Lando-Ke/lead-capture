@@ -53,7 +53,9 @@ class LeadServiceTest extends TestCase
             'website_url' => 'https://example.com',
             'website_type' => 'ecommerce',
             'platform_id' => 1,
+            'created_at' => now(),
         ]);
+        $expectedLead->id = 1;
 
         $this->leadRepository
             ->shouldReceive('findByEmail')
@@ -68,11 +70,13 @@ class LeadServiceTest extends TestCase
             ->andReturn($expectedLead);
 
         Log::shouldReceive('info')
-            ->with('New lead created successfully', [
-                'lead_id' => 1,
-                'email' => 'john@example.com',
-                'website_type' => 'ecommerce',
-            ])
+            ->with('New lead created successfully', Mockery::on(function ($data) {
+                return $data['lead_id'] === 1 &&
+                       $data['email'] === 'john@example.com' &&
+                       $data['website_type'] === 'ecommerce' &&
+                       $data['platform_id'] === 1 &&
+                       isset($data['created_at']);
+            }))
             ->once();
 
         $result = $this->leadService->createLead($leadDTO);
@@ -82,45 +86,7 @@ class LeadServiceTest extends TestCase
         $this->assertEquals('john@example.com', $result->email);
     }
 
-    /** @test */
-    public function it_throws_exception_when_lead_already_exists(): void
-    {
-        $leadDTO = new LeadDTO(
-            name: 'John Doe',
-            email: 'john@example.com',
-            company: 'Acme Corp',
-            websiteUrl: 'https://example.com',
-            websiteType: WebsiteType::ECOMMERCE,
-            platform: 1
-        );
 
-        $existingLead = new Lead([
-            'id' => 1,
-            'name' => 'Existing User',
-            'email' => 'john@example.com',
-        ]);
-
-        $this->leadRepository
-            ->shouldReceive('findByEmail')
-            ->with('john@example.com')
-            ->once()
-            ->andReturn($existingLead);
-
-        $this->leadRepository
-            ->shouldNotReceive('create');
-
-        Log::shouldReceive('info')
-            ->with('Duplicate lead submission attempt', [
-                'email' => 'john@example.com',
-                'existing_lead_id' => 1,
-            ])
-            ->once();
-
-        $this->expectException(LeadAlreadyExistsException::class);
-        $this->expectExceptionMessage('A lead with email john@example.com already exists.');
-
-        $this->leadService->createLead($leadDTO);
-    }
 
     /** @test */
     public function it_can_get_lead_by_email(): void
@@ -210,7 +176,9 @@ class LeadServiceTest extends TestCase
             'website_url' => null,
             'website_type' => 'business',
             'platform_id' => null,
+            'created_at' => now(),
         ]);
+        $expectedLead->id = 1;
 
         $this->leadRepository
             ->shouldReceive('findByEmail')
@@ -225,11 +193,13 @@ class LeadServiceTest extends TestCase
             ->andReturn($expectedLead);
 
         Log::shouldReceive('info')
-            ->with('New lead created successfully', [
-                'lead_id' => 1,
-                'email' => 'john@example.com',
-                'website_type' => 'business',
-            ])
+            ->with('New lead created successfully', Mockery::on(function ($data) {
+                return $data['lead_id'] === 1 &&
+                       $data['email'] === 'john@example.com' &&
+                       $data['website_type'] === 'business' &&
+                       $data['platform_id'] === null &&
+                       isset($data['created_at']);
+            }))
             ->once();
 
         $result = $this->leadService->createLead($leadDTO);
@@ -264,11 +234,12 @@ class LeadServiceTest extends TestCase
             );
 
             $expectedLead = new Lead([
-                'id' => 1,
                 'name' => 'John Doe',
                 'email' => "john+{$websiteType->value}@example.com",
                 'website_type' => $websiteType->value,
+                'created_at' => now(),
             ]);
+            $expectedLead->id = 1;
 
             $this->leadRepository
                 ->shouldReceive('findByEmail')
@@ -283,17 +254,18 @@ class LeadServiceTest extends TestCase
                 ->andReturn($expectedLead);
 
             Log::shouldReceive('info')
-                ->with('New lead created successfully', [
-                    'lead_id' => 1,
-                    'email' => "john+{$websiteType->value}@example.com",
-                    'website_type' => $websiteType->value,
-                ])
+                ->with('New lead created successfully', Mockery::on(function ($data) use ($websiteType) {
+                    return $data['lead_id'] === 1 &&
+                           $data['email'] === "john+{$websiteType->value}@example.com" &&
+                           $data['website_type'] === $websiteType->value &&
+                           isset($data['created_at']);
+                }))
                 ->once();
 
             $result = $this->leadService->createLead($leadDTO);
 
             $this->assertInstanceOf(Lead::class, $result);
-            $this->assertEquals($websiteType->value, $result->website_type);
+            $this->assertEquals($websiteType, $result->website_type);
         }
     }
 
@@ -310,11 +282,12 @@ class LeadServiceTest extends TestCase
         );
 
         $newLead = new Lead([
-            'id' => 1,
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'website_type' => 'ecommerce',
+            'created_at' => now(),
         ]);
+        $newLead->id = 1;
 
         $this->leadRepository
             ->shouldReceive('findByEmail')
@@ -325,14 +298,19 @@ class LeadServiceTest extends TestCase
             ->andReturn($newLead);
 
         Log::shouldReceive('info')
-            ->with('New lead created successfully', [
-                'lead_id' => 1,
-                'email' => 'john@example.com',
-                'website_type' => 'ecommerce',
-            ])
+            ->with('New lead created successfully', Mockery::on(function ($data) {
+                return $data['lead_id'] === 1 &&
+                       $data['email'] === 'john@example.com' &&
+                       $data['website_type'] === 'ecommerce' &&
+                       isset($data['created_at']);
+            }))
             ->once();
 
-        $this->leadService->createLead($leadDTO);
+        $result = $this->leadService->createLead($leadDTO);
+        
+        $this->assertInstanceOf(Lead::class, $result);
+        $this->assertEquals('John Doe', $result->name);
+        $this->assertEquals('john@example.com', $result->email);
     }
 
     /** @test */
@@ -348,20 +326,21 @@ class LeadServiceTest extends TestCase
         );
 
         $existingLead = new Lead([
-            'id' => 5,
             'name' => 'Existing User',
             'email' => 'john@example.com',
         ]);
+        $existingLead->id = 5;
 
         $this->leadRepository
             ->shouldReceive('findByEmail')
             ->andReturn($existingLead);
 
         Log::shouldReceive('info')
-            ->with('Duplicate lead submission attempt', [
-                'email' => 'john@example.com',
-                'existing_lead_id' => 5,
-            ])
+            ->with('Duplicate lead submission attempt', Mockery::on(function ($data) {
+                return $data['email'] === 'john@example.com' &&
+                       $data['existing_lead_id'] === 5 &&
+                       isset($data['attempted_at']);
+            }))
             ->once();
 
         $this->expectException(LeadAlreadyExistsException::class);

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enums\WebsiteType;
+use App\Rules\ActivePlatform;
+use App\Rules\SupportsWebsiteType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -41,7 +43,7 @@ final class StoreLeadRequest extends FormRequest
             ],
             'email' => [
                 'required',
-                'email:rfc,dns',
+                'email:rfc',
                 'max:255',
                 'unique:leads,email',
             ],
@@ -55,18 +57,19 @@ final class StoreLeadRequest extends FormRequest
                 'nullable',
                 'url',
                 'max:255',
-                'active_url',
             ],
             'website_type' => [
                 'required',
                 'string',
                 Rule::enum(WebsiteType::class),
             ],
-            'platform' => [
+            'platform_id' => [
                 'nullable',
                 'required_if:website_type,ecommerce',
-                'string',
-                'max:255',
+                'integer',
+                'exists:platforms,id',
+                new ActivePlatform(),
+                new SupportsWebsiteType(),
             ],
         ];
     }
@@ -91,7 +94,8 @@ final class StoreLeadRequest extends FormRequest
             'website_url.active_url' => 'The website URL must be accessible.',
             'website_type.required' => 'Please select a website type.',
             'website_type.enum' => 'Please select a valid website type.',
-            'platform.required_if' => 'Please select a platform for your e-commerce site.',
+            'platform_id.required_if' => 'Please select a platform for your e-commerce site.',
+            'platform_id.exists' => 'The selected platform is not valid.',
         ];
     }
 
@@ -108,7 +112,7 @@ final class StoreLeadRequest extends FormRequest
             'company' => 'company name',
             'website_url' => 'website URL',
             'website_type' => 'website type',
-            'platform' => 'platform',
+            'platform_id' => 'platform',
         ];
     }
 

@@ -42,10 +42,7 @@ final class LeadService implements LeadServiceInterface
                 'attempted_at' => now()->toDateTimeString(),
             ]);
             
-            throw new LeadAlreadyExistsException(
-                "A lead with email {$leadDTO->email} already exists."
-            );
-        }
+            throw new LeadAlreadyExistsException($leadDTO->email, $existingLead->id);        }
 
         // Create the lead
         $lead = $this->leadRepository->create($leadDTO);
@@ -54,8 +51,8 @@ final class LeadService implements LeadServiceInterface
             'lead_id' => $lead->id,
             'email' => $lead->email,
             'website_type' => $lead->website_type->value,
-            'platform' => $lead->platform,
-            'created_at' => $lead->created_at->toDateTimeString(),
+            'platform_id' => $lead->platform_id,
+            'created_at' => $lead->created_at ? $lead->created_at->toDateTimeString() : now()->toDateTimeString(),
         ]);
 
         return $lead;

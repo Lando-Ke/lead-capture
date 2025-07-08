@@ -143,26 +143,26 @@ class LeadDTOTest extends TestCase
     public function it_handles_different_website_types(): void
     {
         $websiteTypes = [
-            WebsiteType::ECOMMERCE => 'ecommerce',
-            WebsiteType::BLOG => 'blog',
-            WebsiteType::BUSINESS => 'business',
-            WebsiteType::PORTFOLIO => 'portfolio',
-            WebsiteType::OTHER => 'other',
+            WebsiteType::ECOMMERCE,
+            WebsiteType::BLOG,
+            WebsiteType::BUSINESS,
+            WebsiteType::PORTFOLIO,
+            WebsiteType::OTHER,
         ];
 
-        foreach ($websiteTypes as $typeEnum => $typeString) {
+        foreach ($websiteTypes as $typeEnum) {
             $dto = new LeadDTO(
                 name: 'John Doe',
                 email: 'john@example.com',
                 company: null,
                 websiteUrl: null,
                 websiteType: $typeEnum,
-                platform: null
+                platform: $typeEnum === WebsiteType::ECOMMERCE ? 1 : null
             );
 
             $array = $dto->toArray();
 
-            $this->assertEquals($typeString, $array['website_type']);
+            $this->assertEquals($typeEnum->value, $array['website_type']);
         }
     }
 

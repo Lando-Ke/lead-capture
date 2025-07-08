@@ -13,7 +13,18 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('company')->nullable();
+            $table->string('website_url')->nullable();
+            $table->string('website_type');
+            $table->foreignId('platform_id')->nullable()->constrained('platforms')->onDelete('set null'); // Foreign key to platforms table
+            $table->timestamp('submitted_at');
             $table->timestamps();
+
+            $table->index(['email', 'submitted_at']);
+            $table->index('website_type');
+            $table->index('platform_id');
         });
     }
 

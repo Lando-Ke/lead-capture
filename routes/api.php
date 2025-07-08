@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\ApiDocumentationController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PlatformController;
 use Illuminate\Http\Request;
@@ -27,11 +28,20 @@ Route::get('/health', function () {
     ]);
 })->name('api.health');
 
+// API Documentation
+Route::get('/documentation', [ApiDocumentationController::class, 'index'])
+    ->name('api.documentation')
+    ->middleware('api.cache:short');
+
+Route::get('/openapi', [ApiDocumentationController::class, 'openapi'])
+    ->name('api.openapi')
+    ->middleware('api.cache:short');
+
 // API v1 Routes
 Route::prefix('v1')->name('api.v1.')->group(function () {
     
-    // Platform routes - Public (used for form options)
-    Route::prefix('platforms')->name('platforms.')->group(function () {
+    // Platform routes - Public (used for form options) with caching
+    Route::prefix('platforms')->name('platforms.')->middleware('api.cache:platforms')->group(function () {
         Route::get('/', [PlatformController::class, 'index'])
             ->name('index');
         
@@ -56,7 +66,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     });
 
     // Form metadata routes - Cached responses for better performance
-    Route::prefix('form')->name('form.')->middleware('cache.headers:public;max_age=3600')->group(function () {
+    Route::prefix('form')->name('form.')->middleware('api.cache:form-options')->group(function () {
         Route::get('/options', function () {
             return response()->json([
                 'website_types' => collect(\App\Enums\WebsiteType::cases())->map(fn($type) => [
@@ -65,7 +75,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                     'description' => $type->description(),
                     'icon' => $type->icon(),
                 ])->toArray(),
-                'cache_expires_at' => now()->addHour()->toISOString(),
+                'cache_expires_at' => now()->addMinutes(30)->toISOString(),
             ]);
         })->name('options');
     });

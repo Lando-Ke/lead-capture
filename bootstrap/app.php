@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        $middleware->alias([
+            'api.cache' => \App\Http\Middleware\ApiCacheHeaders::class,
+        ]);
+
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -2,15 +2,39 @@
 // database/seeders/PlatformSeeder.php
 namespace Database\Seeders;
 
-use App\Models\Platform;
+use App\DTOs\PlatformDTO;
 use App\Enums\WebsiteType;
+use App\Models\Platform;
 use Illuminate\Database\Seeder;
 
+/**
+ * Platform Seeder
+ * 
+ * Seeds the platforms table with e-commerce platform data.
+ */
 class PlatformSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $platforms = [
+        $platforms = $this->getPlatformData();
+
+        foreach ($platforms as $platformData) {
+            $platformDTO = PlatformDTO::fromArray($platformData);
+            Platform::create($platformDTO->toArray());
+        }
+    }
+
+    /**
+     * Get platform seed data
+     * 
+     * @return array<int, array<string, mixed>>
+     */
+    private function getPlatformData(): array
+    {
+        return [
             [
                 'name' => 'Shopify',
                 'slug' => 'shopify',
@@ -60,9 +84,5 @@ class PlatformSeeder extends Seeder
                 'sort_order' => 6,
             ],
         ];
-
-        foreach ($platforms as $platform) {
-            Platform::create($platform);
-        }
     }
 } 

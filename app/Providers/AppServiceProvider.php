@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use App\Contracts\LeadRepositoryInterface;
+use App\Contracts\PlatformRepositoryInterface;
 use App\Repositories\LeadRepository;
-use App\Repositories\LeadRepositoryInterface;
 use App\Repositories\PlatformRepository;
-use App\Repositories\PlatformRepositoryInterface;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 

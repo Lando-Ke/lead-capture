@@ -2,11 +2,17 @@
 // app/Repositories/PlatformRepository.php
 namespace App\Repositories;
 
+use App\Contracts\PlatformRepositoryInterface;
 use App\Enums\WebsiteType;
 use App\Models\Platform;
 use Illuminate\Database\Eloquent\Collection;
 
-class PlatformRepository implements PlatformRepositoryInterface
+/**
+ * Platform Repository Implementation
+ * 
+ * Handles platform data retrieval operations.
+ */
+final class PlatformRepository implements PlatformRepositoryInterface
 {
     public function getByWebsiteType(WebsiteType $websiteType): Collection
     {

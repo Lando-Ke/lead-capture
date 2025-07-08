@@ -44,13 +44,14 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             ->whereAlphaNumeric('slug');
     });
 
-    // Lead routes - Rate limited for form submissions
+    // Lead routes - Enhanced rate limiting (per-user for auth, IP-based for guests)
     Route::prefix('leads')->name('leads.')->middleware('throttle:leads')->group(function () {
         Route::post('/', [LeadController::class, 'store'])
             ->name('store');
         
         Route::get('/{email}/check', [LeadController::class, 'checkEmail'])
             ->name('check-email')
+            ->middleware('throttle:email-check')
             ->whereIn('email', ['.*']); // Allow any email format, will be validated in controller
     });
 

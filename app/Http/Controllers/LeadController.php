@@ -78,9 +78,17 @@ final class LeadController extends Controller
      */
     public function checkEmail(Request $request, string $email): JsonResponse
     {
-        $request->validate([
-            'email' => 'email',
+        $validator = validator(['email' => $email], [
+            'email' => ['required', 'email:rfc'],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid email address.',
+                'errors' => $validator->errors()->get('email'),
+            ], 422);
+        }
 
         $lead = $this->leadService->getLeadByEmail($email);
 

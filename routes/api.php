@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\ApiDocumentationController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\NotificationStatusController;
 use App\Http\Controllers\PlatformController;
 use Illuminate\Support\Facades\Route;
 
@@ -72,6 +73,35 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                 'cache_expires_at' => now()->addMinutes(30)->toISOString(),
             ]);
         })->name('options');
+    });
+
+    // Notification status routes - For monitoring and debugging
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/status', [NotificationStatusController::class, 'index'])
+            ->name('status');
+
+        Route::get('/health', [NotificationStatusController::class, 'health'])
+            ->name('health');
+
+        Route::get('/queue', [NotificationStatusController::class, 'queue'])
+            ->name('queue');
+
+        Route::get('/statistics', [NotificationStatusController::class, 'statistics'])
+            ->name('statistics');
+
+        // Admin notification management routes
+        Route::get('/logs', [NotificationStatusController::class, 'logs'])
+            ->name('logs');
+
+        Route::post('/retry/{logId}', [NotificationStatusController::class, 'retryNotification'])
+            ->name('retry')
+            ->whereNumber('logId');
+
+        Route::post('/test', [NotificationStatusController::class, 'sendTestNotification'])
+            ->name('test');
+
+        Route::get('/analytics', [NotificationStatusController::class, 'analytics'])
+            ->name('analytics');
     });
 });
 

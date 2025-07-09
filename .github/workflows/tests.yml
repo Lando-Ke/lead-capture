@@ -44,26 +44,21 @@ jobs:
 
       - name: Setup environment
         run: |
-          cp .env.example .env
           cp .env.example .env.testing
-          php artisan key:generate
           php artisan key:generate --env=testing
 
-      - name: Update environment for testing
+      - name: Configure testing environment
         run: |
+          sed -i 's/DB_DATABASE=lead_capture/DB_DATABASE=lead_capture_test/' .env.testing
+          sed -i 's/DB_USERNAME=root/DB_USERNAME=root/' .env.testing
+          sed -i 's/DB_PASSWORD=/DB_PASSWORD=/' .env.testing
+          sed -i 's/SESSION_DRIVER=database/SESSION_DRIVER=array/' .env.testing
+          sed -i 's/CACHE_STORE=database/CACHE_STORE=array/' .env.testing
+          sed -i 's/MAIL_MAILER=log/MAIL_MAILER=array/' .env.testing
           echo "APP_DEBUG=true" >> .env.testing
-          echo "DB_CONNECTION=mysql" >> .env.testing
-          echo "DB_HOST=127.0.0.1" >> .env.testing
-          echo "DB_PORT=3306" >> .env.testing
-          echo "DB_DATABASE=lead_capture_test" >> .env.testing
-          echo "DB_USERNAME=root" >> .env.testing
-          echo "DB_PASSWORD=" >> .env.testing
-          echo "SESSION_DRIVER=array" >> .env.testing
-          echo "CACHE_STORE=array" >> .env.testing
-          echo "MAIL_MAILER=array" >> .env.testing
 
       - name: Cache configuration
-        run: php artisan config:cache
+        run: php artisan config:cache --env=testing
 
       - name: Create Database
         run: |

@@ -127,7 +127,31 @@
       @close="resetForm" 
     />
 
-    <!-- Error Alert -->
+    <!-- Validation Error Alert -->
+    <div
+      v-if="leadStore.hasErrors && (leadStore.errors.email || leadStore.errors.name || leadStore.errors.company)"
+      class="fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg z-50 max-w-md"
+    >
+      <div class="flex items-start">
+        <ExclamationTriangleIcon class="h-5 w-5 text-red-400 mr-2 flex-shrink-0 mt-0.5" />
+        <div class="flex-1">
+          <h4 class="text-sm font-medium text-red-800">Please fix the following:</h4>
+          <ul class="mt-1 text-sm text-red-700 space-y-1">
+            <li v-if="leadStore.errors.email">{{ leadStore.errors.email[0] }}</li>
+            <li v-if="leadStore.errors.name">{{ leadStore.errors.name[0] }}</li>
+            <li v-if="leadStore.errors.company">{{ leadStore.errors.company[0] }}</li>
+          </ul>
+          <button
+            class="mt-2 text-xs text-red-600 hover:text-red-800 underline"
+            @click="leadStore.clearErrors()"
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- General Error Alert -->
     <div
       v-if="leadStore.hasErrors && leadStore.errors.general"
       class="fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg z-50"
@@ -220,21 +244,25 @@ const handleWebsiteTypeChange = async websiteType => {
 const handleSubmit = async () => {
   if (!canSubmit.value) return
 
-  console.log('📋 Starting lead submission...')
-
   try {
     const result = await leadStore.submitLead()
-    console.log('📋 Lead submission result:', result)
 
     if (result.success) {
-      console.log('📋 Lead submitted successfully, showing success modal')
-      console.log('📋 Notification status:', result.notification)
       submittedLead.value = result.data
       showSuccess.value = true
     }
   } catch (error) {
-    console.error('📋 Submission error:', error)
-    // Error is already handled in the store
+    // Navigate back to the appropriate step if there are field errors
+    if (leadStore.hasErrors) {
+      // Check which step has errors and navigate to the first one
+      if (leadStore.errors.name || leadStore.errors.email || leadStore.errors.company || leadStore.errors.website_url) {
+        currentStep.value = 0 // Basic Information step
+      } else if (leadStore.errors.website_type) {
+        currentStep.value = 1 // Website Details step
+      } else if (leadStore.errors.platform_id) {
+        currentStep.value = 2 // Platform Selection step
+      }
+    }
   }
 }
 

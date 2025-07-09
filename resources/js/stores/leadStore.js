@@ -134,8 +134,9 @@ export const useLeadStore = defineStore('lead', () => {
       }
     } catch (error) {
       console.error('📋 Lead submission error:', error)
+      
       if (error.response?.status === 422) {
-        // Validation errors
+        // Validation errors - extract and set them
         const responseErrors = error.response.data.errors || {}
         Object.keys(responseErrors).forEach(field => {
           setError(field, responseErrors[field])

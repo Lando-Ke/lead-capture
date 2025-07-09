@@ -13,7 +13,7 @@ class LeadApiTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_validates_email_on_check_endpoint(): void
+    public function itValidatesEmailOnCheckEndpoint(): void
     {
         $response = $this->getJson('/api/v1/leads/invalid-email/check');
 
@@ -24,4 +24,3 @@ class LeadApiTest extends TestCase
             ]);
     }
 }
-

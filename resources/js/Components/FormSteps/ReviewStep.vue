@@ -129,7 +129,7 @@
         </div>
         <div v-else class="flex items-center">
           <CheckIcon class="w-4 h-4 mr-2" />
-          Submit Lead
+          Submit
         </div>
       </button>
     </div>

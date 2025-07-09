@@ -10,6 +10,7 @@ defineProps({
     type: Boolean,
   },
   status: {
+    default: null,
     type: String,
   },
 })

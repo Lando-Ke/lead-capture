@@ -251,7 +251,9 @@ const handleSubmit = async () => {
       submittedLead.value = result.data
       showSuccess.value = true
     }
-  } catch (error) {
+  } catch {
+    // Log error for debugging
+    
     // Navigate back to the appropriate step if there are field errors
     if (leadStore.hasErrors) {
       // Check which step has errors and navigate to the first one

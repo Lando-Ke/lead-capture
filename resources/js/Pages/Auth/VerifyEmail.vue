@@ -7,9 +7,9 @@ import { Head, Link, useForm } from '@inertiajs/vue3'
 const props = defineProps({
   status: {
     type: String,
+    default: null,
   },
 })
-
 const form = useForm({})
 
 const submit = () => {

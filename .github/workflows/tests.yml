@@ -42,29 +42,35 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Setup environment
+      - name: Setup testing environment
         run: |
           cp .env.example .env.testing
-          php artisan key:generate --env=testing
-
-      - name: Configure testing environment
-        run: |
+          # Configure testing environment variables
+          sed -i 's/APP_ENV=local/APP_ENV=testing/' .env.testing
+          sed -i 's/APP_DEBUG=true/APP_DEBUG=true/' .env.testing
           sed -i 's/DB_DATABASE=lead_capture/DB_DATABASE=lead_capture_test/' .env.testing
           sed -i 's/DB_USERNAME=root/DB_USERNAME=root/' .env.testing
           sed -i 's/DB_PASSWORD=/DB_PASSWORD=/' .env.testing
           sed -i 's/SESSION_DRIVER=database/SESSION_DRIVER=array/' .env.testing
           sed -i 's/CACHE_STORE=database/CACHE_STORE=array/' .env.testing
           sed -i 's/MAIL_MAILER=log/MAIL_MAILER=array/' .env.testing
-          echo "APP_DEBUG=true" >> .env.testing
+          # Add missing test environment variables
+          echo "QUEUE_CONNECTION=sync" >> .env.testing
+          echo "CACHE_DRIVER=array" >> .env.testing
 
-      - name: Cache configuration
-        run: php artisan config:cache --env=testing
+      - name: Generate application key
+        run: php artisan key:generate --env=testing
+
+      - name: Clear all caches before testing
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan view:clear
+          php artisan route:clear
 
       - name: Create Database
         run: |
           mysql --host 127.0.0.1 --port 3306 -uroot -e "CREATE DATABASE IF NOT EXISTS lead_capture_test;"
-
-
 
       - name: Run Database Migrations
         run: php artisan migrate:fresh --env=testing --force
@@ -73,7 +79,7 @@ jobs:
         run: php artisan db:seed --class=PlatformSeeder --env=testing --force
 
       - name: Run Backend Tests
-        run: php artisan test --coverage-clover=coverage.xml
+        run: php artisan test --env=testing --coverage-clover=coverage.xml
 
       - name: Upload Backend Coverage
         uses: codecov/codecov-action@v3

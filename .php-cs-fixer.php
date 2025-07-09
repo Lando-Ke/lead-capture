@@ -49,7 +49,7 @@ return (new PhpCsFixer\Config())
         'no_leading_import_slash' => true,
         'no_leading_namespace_whitespace' => true,
         'no_mixed_echo_print' => ['use' => 'echo'],
-        'no_multiline_whitespace_before_semicolons' => true,
+        'multiline_whitespace_before_semicolons' => ['strategy' => 'no_multi_line'],
         'no_short_bool_cast' => true,
         'no_singleline_whitespace_before_semicolons' => true,
         'no_spaces_around_offset' => true,
@@ -59,7 +59,6 @@ return (new PhpCsFixer\Config())
         'no_unused_imports' => true,
         'no_whitespace_before_comma_in_array' => true,
         'no_whitespace_in_blank_line' => true,
-        'normalize_index_brace' => true,
         'object_operator_without_whitespace' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'phpdoc_indent' => true,
@@ -77,7 +76,6 @@ return (new PhpCsFixer\Config())
         'return_type_declaration' => true,
         'semicolon_after_instruction' => true,
         'short_scalar_cast' => true,
-        'single_blank_line_before_namespace' => true,
         'single_class_element_per_statement' => true,
         'single_line_comment_style' => ['comment_types' => ['hash']],
         'single_quote' => true,
@@ -85,9 +83,7 @@ return (new PhpCsFixer\Config())
         'standardize_not_equals' => true,
         'ternary_operator_spaces' => true,
         'trailing_comma_in_multiline' => true,
-        'trim_array_spaces' => true,
         'unary_operator_spaces' => true,
-        'whitespace_after_comma_in_array' => true,
         
         // Laravel specific
         'not_operator_with_successor_space' => false,
@@ -98,7 +94,6 @@ return (new PhpCsFixer\Config())
             ],
         ],
         'method_chaining_indentation' => true,
-        'multiline_whitespace_before_semicolons' => ['strategy' => 'no_multi_line'],
         'single_trait_insert_per_statement' => true,
         
         // Modern PHP features

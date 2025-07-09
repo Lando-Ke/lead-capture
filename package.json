@@ -11,6 +11,8 @@
         "test:watch": "vitest --watch",
         "lint": "eslint resources/js --ext .js,.vue --report-unused-disable-directives --max-warnings 0",
         "lint:fix": "eslint resources/js --ext .js,.vue --fix",
+        "lint:php": "/usr/local/opt/php@8.2/bin/php vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes",
+        "lint:php:fix": "/usr/local/opt/php@8.2/bin/php vendor/bin/php-cs-fixer fix --allow-risky=yes",
         "format": "prettier --write \"resources/js/**/*.{js,vue}\"",
         "format:check": "prettier --check \"resources/js/**/*.{js,vue}\""
     },

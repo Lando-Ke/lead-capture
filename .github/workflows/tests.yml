@@ -127,7 +127,7 @@ jobs:
       run: npm ci
 
     - name: Run PHP CS Fixer (dry-run)
-      run: vendor/bin/php-cs-fixer fix --dry-run --diff
+      run: vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes
 
     - name: Run ESLint
       run: npm run lint

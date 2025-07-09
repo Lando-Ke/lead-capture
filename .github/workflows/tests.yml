@@ -67,14 +67,7 @@ jobs:
         run: |
           mysql --host 127.0.0.1 --port 3306 -uroot -e "CREATE DATABASE IF NOT EXISTS lead_capture_test;"
 
-      - name: Update phpunit.xml.dist for CI
-        run: |
-          sed -i 's|<env name="DB_CONNECTION" value="sqlite"/>|<env name="DB_CONNECTION" value="mysql"/>|g' phpunit.xml.dist
-          sed -i 's|<env name="DB_DATABASE" value=":memory:"/>|<env name="DB_DATABASE" value="lead_capture_test"/>|g' phpunit.xml.dist
-          sed -i '/<env name="DB_DATABASE" value="lead_capture_test"\/>/a\        <env name="DB_HOST" value="127.0.0.1"/>' phpunit.xml.dist
-          sed -i '/<env name="DB_HOST" value="127.0.0.1"\/>/a\        <env name="DB_PORT" value="3306"/>' phpunit.xml.dist
-          sed -i '/<env name="DB_PORT" value="3306"\/>/a\        <env name="DB_USERNAME" value="root"/>' phpunit.xml.dist
-          sed -i '/<env name="DB_USERNAME" value="root"\/>/a\        <env name="DB_PASSWORD" value=""/>' phpunit.xml.dist
+
 
       - name: Run Database Migrations
         run: php artisan migrate:fresh --env=testing --force

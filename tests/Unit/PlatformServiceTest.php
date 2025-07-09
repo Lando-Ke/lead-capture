@@ -10,6 +10,7 @@ use App\Models\Platform;
 use App\Services\PlatformService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PlatformServiceTest extends TestCase
@@ -32,7 +33,7 @@ class PlatformServiceTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function itCanGetPlatformsForWebsiteType(): void
     {
         $platforms = new Collection([
@@ -60,7 +61,7 @@ class PlatformServiceTest extends TestCase
         $this->assertEquals('Shopify', $result->first()->name);
     }
 
-    /** @test */
+    #[Test]
     public function itCachesPlatformsForWebsiteType(): void
     {
         $platforms = new Collection([
@@ -88,7 +89,7 @@ class PlatformServiceTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-    /** @test */
+    #[Test]
     public function itCanGetAllActivePlatforms(): void
     {
         $platforms = new Collection([
@@ -114,7 +115,7 @@ class PlatformServiceTest extends TestCase
         $this->assertCount(2, $result);
     }
 
-    /** @test */
+    #[Test]
     public function itCachesAllActivePlatforms(): void
     {
         $platforms = new Collection([
@@ -141,7 +142,7 @@ class PlatformServiceTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-    /** @test */
+    #[Test]
     public function itCanFindPlatformBySlug(): void
     {
         $platform = new Platform(['id' => 1, 'name' => 'Shopify', 'slug' => 'shopify']);
@@ -159,7 +160,7 @@ class PlatformServiceTest extends TestCase
         $this->assertEquals('shopify', $result->slug);
     }
 
-    /** @test */
+    #[Test]
     public function itReturnsNullWhenPlatformNotFoundBySlug(): void
     {
         $this->platformRepository
@@ -173,7 +174,7 @@ class PlatformServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    /** @test */
+    #[Test]
     public function itCanClearPlatformCache(): void
     {
         Cache::shouldReceive('forget')
@@ -212,7 +213,7 @@ class PlatformServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesDifferentWebsiteTypes(): void
     {
         $websiteTypes = [
@@ -248,7 +249,7 @@ class PlatformServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function itReturnsEmptyCollectionForNoPlatforms(): void
     {
         $emptyCollection = new Collection([]);
@@ -273,7 +274,7 @@ class PlatformServiceTest extends TestCase
         $this->assertTrue($result->isEmpty());
     }
 
-    /** @test */
+    #[Test]
     public function itUsesProperCacheKeys(): void
     {
         $platforms = new Collection([
@@ -298,7 +299,7 @@ class PlatformServiceTest extends TestCase
         $this->platformService->getPlatformsForWebsiteType(WebsiteType::ECOMMERCE);
     }
 
-    /** @test */
+    #[Test]
     public function itUsesProperCacheKeyForAllActive(): void
     {
         $platforms = new Collection([
@@ -322,13 +323,13 @@ class PlatformServiceTest extends TestCase
         $this->platformService->getAllActivePlatforms();
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesRepositoryDependencyInjection(): void
     {
         $this->assertInstanceOf(PlatformRepositoryInterface::class, $this->platformRepository);
     }
 
-    /** @test */
+    #[Test]
     public function itUsesProperMethodSignatures(): void
     {
         $reflection = new \ReflectionClass($this->platformService);
@@ -346,7 +347,7 @@ class PlatformServiceTest extends TestCase
         $this->assertEquals(1, $findBySlugMethod->getNumberOfRequiredParameters());
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesCacheMissGracefully(): void
     {
         $platforms = new Collection([
@@ -373,7 +374,7 @@ class PlatformServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesCacheHitWithoutDatabaseCall(): void
     {
         $cachedPlatforms = new Collection([

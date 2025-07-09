@@ -6,11 +6,12 @@ namespace Tests\Unit;
 
 use App\DTOs\LeadDTO;
 use App\Enums\WebsiteType;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class LeadDTOTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function itCanBeInstantiatedWithAllProperties(): void
     {
         $dto = new LeadDTO(
@@ -30,7 +31,7 @@ class LeadDTOTest extends TestCase
         $this->assertEquals(1, $dto->platform);
     }
 
-    /** @test */
+    #[Test]
     public function itCanBeInstantiatedWithMinimalProperties(): void
     {
         $dto = new LeadDTO(
@@ -50,7 +51,7 @@ class LeadDTOTest extends TestCase
         $this->assertNull($dto->platform);
     }
 
-    /** @test */
+    #[Test]
     public function itCanBeCreatedFromArray(): void
     {
         $data = [
@@ -72,7 +73,7 @@ class LeadDTOTest extends TestCase
         $this->assertEquals(1, $dto->platform);
     }
 
-    /** @test */
+    #[Test]
     public function itCanBeCreatedFromArrayWithNullableFields(): void
     {
         $data = [
@@ -91,7 +92,7 @@ class LeadDTOTest extends TestCase
         $this->assertNull($dto->platform);
     }
 
-    /** @test */
+    #[Test]
     public function itCanBeConvertedToArray(): void
     {
         $dto = new LeadDTO(
@@ -115,7 +116,7 @@ class LeadDTOTest extends TestCase
         ], $array);
     }
 
-    /** @test */
+    #[Test]
     public function itCanBeConvertedToArrayWithNullValues(): void
     {
         $dto = new LeadDTO(
@@ -139,7 +140,7 @@ class LeadDTOTest extends TestCase
         ], $array);
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesDifferentWebsiteTypes(): void
     {
         $websiteTypes = [
@@ -166,7 +167,7 @@ class LeadDTOTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function itIsImmutable(): void
     {
         $dto = new LeadDTO(
@@ -187,7 +188,7 @@ class LeadDTOTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesPlatformForEcommerce(): void
     {
         $dto = new LeadDTO(
@@ -203,7 +204,7 @@ class LeadDTOTest extends TestCase
         $this->assertNotNull($dto->platform);
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesPlatformForNonEcommerce(): void
     {
         $dto = new LeadDTO(
@@ -219,7 +220,7 @@ class LeadDTOTest extends TestCase
         $this->assertNull($dto->platform);
     }
 
-    /** @test */
+    #[Test]
     public function itCanBeSerializedToJson(): void
     {
         $dto = new LeadDTO(
@@ -242,7 +243,7 @@ class LeadDTOTest extends TestCase
         $this->assertEquals(1, $decoded['platform_id']);
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesNullValuesCorrectly(): void
     {
         $dto = new LeadDTO(
@@ -259,7 +260,7 @@ class LeadDTOTest extends TestCase
         $this->assertNull($dto->platform);
     }
 
-    /** @test */
+    #[Test]
     public function itPreservesDataTypes(): void
     {
         $dto = new LeadDTO(

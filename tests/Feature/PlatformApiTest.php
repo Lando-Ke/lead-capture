@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use App\Enums\WebsiteType;
 use App\Models\Platform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
@@ -71,7 +72,7 @@ class PlatformApiTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function itCanFetchAllActivePlatforms(): void
     {
         $response = $this->getJson('/api/v1/platforms');
@@ -98,7 +99,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itReturnsPlatformsInSortOrder(): void
     {
         $response = $this->getJson('/api/v1/platforms');
@@ -113,7 +114,7 @@ class PlatformApiTest extends TestCase
         $this->assertEquals('Behance', $platforms[4]['name']);
     }
 
-    /** @test */
+    #[Test]
     public function itCanFetchPlatformsByEcommerceType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=ecommerce');
@@ -157,7 +158,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itCanFetchPlatformsByBlogType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=blog');
@@ -180,7 +181,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itCanFetchPlatformsByBusinessType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=business');
@@ -192,7 +193,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itCanFetchPlatformsByPortfolioType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=portfolio');
@@ -204,7 +205,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itReturnsEmptyArrayForOtherWebsiteType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=other');
@@ -221,7 +222,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itValidatesInvalidWebsiteType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=invalid');
@@ -247,7 +248,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itCanFetchPlatformBySlug(): void
     {
         $response = $this->getJson('/api/v1/platforms/shopify');
@@ -271,7 +272,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itReturns404ForNonExistentPlatformSlug(): void
     {
         $response = $this->getJson('/api/v1/platforms/nonexistent');
@@ -284,7 +285,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itReturns404ForInactivePlatformSlug(): void
     {
         $response = $this->getJson('/api/v1/platforms/inactive');
@@ -297,7 +298,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itAppliesProperCacheHeadersToPlatformEndpoints(): void
     {
         $response = $this->getJson('/api/v1/platforms');
@@ -311,7 +312,7 @@ class PlatformApiTest extends TestCase
         $this->assertNotNull($response->headers->get('Last-Modified'));
     }
 
-    /** @test */
+    #[Test]
     public function itAppliesCacheHeadersToPlatformWithQueryParams(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=ecommerce');
@@ -322,7 +323,7 @@ class PlatformApiTest extends TestCase
         $this->assertCacheControlContains($response, ['public', 'max-age=3600', 'stale-while-revalidate=1800']);
     }
 
-    /** @test */
+    #[Test]
     public function itAppliesCacheHeadersToPlatformBySlug(): void
     {
         $response = $this->getJson('/api/v1/platforms/shopify');
@@ -333,7 +334,7 @@ class PlatformApiTest extends TestCase
         $this->assertCacheControlContains($response, ['public', 'max-age=3600', 'stale-while-revalidate=1800']);
     }
 
-    /** @test */
+    #[Test]
     public function itReturnsPlatformsWithMultipleWebsiteTypes(): void
     {
         $response = $this->getJson('/api/v1/platforms/wordpress');
@@ -345,7 +346,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itFiltersPlatformsCorrectlyForMixedWebsiteTypes(): void
     {
         // Test that WordPress appears in both blog and business filters
@@ -364,7 +365,7 @@ class PlatformApiTest extends TestCase
             ->assertJsonMissing(['name' => 'WordPress']);
     }
 
-    /** @test */
+    #[Test]
     public function itRespectsPlatformSortOrder(): void
     {
         // Update sort orders to test
@@ -382,7 +383,7 @@ class PlatformApiTest extends TestCase
         $this->assertEquals('WooCommerce', $platforms[2]['name']);
     }
 
-    /** @test */
+    #[Test]
     public function itOnlyReturnsActivePlatformsInFilteredResults(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=ecommerce');
@@ -394,7 +395,7 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesConcurrentRequestsProperly(): void
     {
         $responses = [];
@@ -411,7 +412,7 @@ class PlatformApiTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function itReturnsConsistentPlatformDataStructure(): void
     {
         $response = $this->getJson('/api/v1/platforms');
@@ -434,7 +435,7 @@ class PlatformApiTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function itHandlesEmptyPlatformResultsGracefully(): void
     {
         // Delete all platforms to test empty results

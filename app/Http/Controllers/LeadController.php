@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Contracts\LeadServiceInterface;
 use App\DTOs\LeadDTO;
+use App\Events\LeadSubmittedEvent;
 use App\Exceptions\LeadAlreadyExistsException;
 use App\Http\Requests\StoreLeadRequest;
 use App\Http\Resources\LeadResource;
@@ -38,6 +39,14 @@ final class LeadController extends Controller
         try {
             $leadDTO = LeadDTO::fromArray($request->validated());
             $lead = $this->leadService->createLead($leadDTO);
+
+            // Fire event for asynchronous notification processing
+            // This is non-blocking and will be processed via queue
+            LeadSubmittedEvent::dispatch($leadDTO, [
+                'user_agent' => $request->userAgent(),
+                'ip_address' => $request->ip(),
+                'submitted_at' => now()->toISOString(),
+            ]);
 
             // Load the platform relationship if it exists
             $lead->load('platform');

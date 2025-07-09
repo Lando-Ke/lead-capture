@@ -142,8 +142,12 @@ dist
 # Gatsby files
 .cache/
 
-# Public folder (but keep images)
+# Public folder (but keep essential files)
 /public/*
+!/public/index.php
+!/public/.htaccess
+!/public/robots.txt
+!/public/favicon.ico
 !/public/images/
 
 # Storybook build outputs

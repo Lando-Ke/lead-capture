@@ -243,7 +243,7 @@ const resetForm = () => {
   showSuccess.value = false
   submittedLead.value = null
   leadStore.resetForm()
-  platformStore.clearFilteredPlatforms()
+  platformStore.clearAvailablePlatforms()
 }
 
 // Lifecycle

@@ -8,6 +8,7 @@ use App\DTOs\PlatformDTO;
 use App\Enums\WebsiteType;
 use App\Models\Platform;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Platform Seeder.
@@ -21,8 +22,10 @@ class PlatformSeeder extends Seeder
      */
     public function run(): void
     {
-        // Clear existing platforms first
+        // Clear existing platforms first (disable foreign key checks temporarily)
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Platform::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $platforms = $this->getPlatformData();
 
@@ -45,7 +48,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Shopify',
                 'slug' => 'shopify',
                 'description' => 'All-in-one commerce platform for online stores',
-                'logo' => 'logos/shopify.png',
+                'logo' => 'images/platforms/shopify.png',
                 'website_types' => [WebsiteType::ECOMMERCE->value],
                 'sort_order' => 1,
             ],
@@ -53,7 +56,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'WooCommerce',
                 'slug' => 'woocommerce',
                 'description' => 'Customizable WordPress e-commerce plugin',
-                'logo' => 'logos/woocommerce.png',
+                'logo' => 'images/platforms/woocommerce.png',
                 'website_types' => [WebsiteType::ECOMMERCE->value],
                 'sort_order' => 2,
             ],
@@ -61,7 +64,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'BigCommerce',
                 'slug' => 'bigcommerce',
                 'description' => 'Scalable e-commerce platform for growing businesses',
-                'logo' => 'logos/bigcommerce.png',
+                'logo' => 'images/platforms/bigcommerce.png',
                 'website_types' => [WebsiteType::ECOMMERCE->value],
                 'sort_order' => 3,
             ],
@@ -69,7 +72,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Magento',
                 'slug' => 'magento',
                 'description' => 'Flexible e-commerce solution with extensive features',
-                'logo' => 'logos/magento.png',
+                'logo' => 'images/platforms/magento.png',
                 'website_types' => [WebsiteType::ECOMMERCE->value],
                 'sort_order' => 4,
             ],
@@ -79,7 +82,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'WordPress',
                 'slug' => 'wordpress',
                 'description' => 'Popular CMS platform for blogs and websites',
-                'logo' => 'logos/wordpress.png',
+                'logo' => 'images/platforms/wordpress.png',
                 'website_types' => [WebsiteType::BLOG->value, WebsiteType::BUSINESS->value],
                 'sort_order' => 10,
             ],
@@ -87,7 +90,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Ghost',
                 'slug' => 'ghost',
                 'description' => 'Modern publishing platform for content creators',
-                'logo' => 'logos/ghost.png',
+                'logo' => 'images/platforms/ghost.png',
                 'website_types' => [WebsiteType::BLOG->value],
                 'sort_order' => 11,
             ],
@@ -95,7 +98,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Medium',
                 'slug' => 'medium',
                 'description' => 'Popular blogging platform for writers and readers',
-                'logo' => 'logos/medium.png',
+                'logo' => 'images/platforms/medium.png',
                 'website_types' => [WebsiteType::BLOG->value],
                 'sort_order' => 12,
             ],
@@ -103,7 +106,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Substack',
                 'slug' => 'substack',
                 'description' => 'Newsletter and blog publishing platform',
-                'logo' => 'logos/substack.png',
+                'logo' => 'images/platforms/substack.png',
                 'website_types' => [WebsiteType::BLOG->value],
                 'sort_order' => 13,
             ],
@@ -113,7 +116,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Wix',
                 'slug' => 'wix',
                 'description' => 'Drag-and-drop website builder for businesses',
-                'logo' => 'logos/wix.png',
+                'logo' => 'images/platforms/wix.png',
                 'website_types' => [WebsiteType::BUSINESS->value],
                 'sort_order' => 20,
             ],
@@ -121,7 +124,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Squarespace',
                 'slug' => 'squarespace',
                 'description' => 'All-in-one website builder for businesses',
-                'logo' => 'logos/squarespace.png',
+                'logo' => 'images/platforms/squarespace.png',
                 'website_types' => [WebsiteType::BUSINESS->value],
                 'sort_order' => 21,
             ],
@@ -129,7 +132,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Webflow',
                 'slug' => 'webflow',
                 'description' => 'Professional website builder with design freedom',
-                'logo' => 'logos/webflow.png',
+                'logo' => 'images/platforms/webflow.png',
                 'website_types' => [WebsiteType::BUSINESS->value, WebsiteType::PORTFOLIO->value],
                 'sort_order' => 22,
             ],
@@ -139,7 +142,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Behance',
                 'slug' => 'behance',
                 'description' => 'Creative portfolio showcase platform',
-                'logo' => 'logos/behance.png',
+                'logo' => 'images/platforms/behance.png',
                 'website_types' => [WebsiteType::PORTFOLIO->value],
                 'sort_order' => 30,
             ],
@@ -147,7 +150,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Dribbble',
                 'slug' => 'dribbble',
                 'description' => 'Design portfolio and inspiration platform',
-                'logo' => 'logos/dribbble.png',
+                'logo' => 'images/platforms/dribbble.png',
                 'website_types' => [WebsiteType::PORTFOLIO->value],
                 'sort_order' => 31,
             ],
@@ -155,7 +158,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Adobe Portfolio',
                 'slug' => 'adobe-portfolio',
                 'description' => 'Professional portfolio builder by Adobe',
-                'logo' => 'logos/adobe-portfolio.png',
+                'logo' => 'images/platforms/adobe-portfolio.png',
                 'website_types' => [WebsiteType::PORTFOLIO->value],
                 'sort_order' => 32,
             ],
@@ -165,7 +168,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Custom Development',
                 'slug' => 'custom-development',
                 'description' => 'Tailored solution built from scratch',
-                'logo' => 'logos/custom.png',
+                'logo' => 'images/platforms/custom-development.png',
                 'website_types' => [
                     WebsiteType::ECOMMERCE->value,
                     WebsiteType::BLOG->value,
@@ -179,7 +182,7 @@ class PlatformSeeder extends Seeder
                 'name' => 'Other Platform',
                 'slug' => 'other',
                 'description' => 'Another platform not listed above',
-                'logo' => 'logos/other.png',
+                'logo' => 'images/platforms/other.png',
                 'website_types' => [
                     WebsiteType::ECOMMERCE->value,
                     WebsiteType::BLOG->value,

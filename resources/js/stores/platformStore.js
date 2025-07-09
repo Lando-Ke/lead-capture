@@ -155,6 +155,16 @@ export const usePlatformStore = defineStore('platform', () => {
     // Check in all platforms
     return platforms.value.find(p => p.slug === slug) || null
   }
+
+  const getPlatformLogo = (platformSlug) => {
+    if (!platformSlug) return '/images/platforms/default.png'
+    return `/images/platforms/${platformSlug}.png`
+  }
+
+  const getPlatformLogoById = (platformId) => {
+    const platform = getPlatformById(platformId)
+    return platform ? getPlatformLogo(platform.slug) : '/images/platforms/default.png'
+  }
   
   return {
     // State
@@ -181,6 +191,8 @@ export const usePlatformStore = defineStore('platform', () => {
     getPlatformLabel,
     getPlatformById,
     getPlatformLabelById,
-    getPlatformBySlug
+    getPlatformBySlug,
+    getPlatformLogo,
+    getPlatformLogoById
   }
 }) 

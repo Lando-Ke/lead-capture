@@ -80,7 +80,15 @@
         
         <div class="text-sm">
           <span class="text-gray-500">Selected Platform</span>
-          <p class="font-medium mt-1">{{ getPlatformLabel(formData.platform_id) }}</p>
+          <div class="flex items-center mt-1">
+            <img 
+              :src="props.platformStore.getPlatformLogoById(formData.platform_id)" 
+              :alt="getPlatformLabel(formData.platform_id)"
+              class="w-5 h-5 mr-2 object-contain"
+              @error="handleImageError"
+            >
+            <p class="font-medium">{{ getPlatformLabel(formData.platform_id) }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -206,5 +214,10 @@ const getWebsiteTypeIcon = (websiteType) => {
 
 const getPlatformLabel = (platformId) => {
   return props.platformStore.getPlatformLabelById(platformId)
+}
+
+const handleImageError = (event) => {
+  // Hide broken images and show fallback
+  event.target.style.display = 'none'
 }
 </script> 

@@ -55,13 +55,11 @@
             <div class="ml-3 flex-1">
               <div class="flex items-center">
                 <img 
-                  v-if="platform.logo" 
-                  :src="platform.logo" 
+                  :src="platformStore.getPlatformLogoById(platform.id)" 
                   :alt="platform.name"
-                  class="w-6 h-6 mr-2"
-                  @error="hideImage"
+                  class="w-6 h-6 mr-2 object-contain"
+                  @error="handleImageError"
                 >
-                <span v-else class="text-lg mr-2">{{ getPlatformIcon(websiteType) }}</span>
                 <span class="font-medium text-gray-900">{{ platform.name }}</span>
               </div>
               <p class="text-sm text-gray-600 mt-1">{{ platform.description }}</p>
@@ -190,7 +188,7 @@ const handlePlatformChange = (platformId) => {
   leadStore.updateFormField('platform_id', platformId)
 }
 
-const hideImage = (event) => {
+const handleImageError = (event) => {
   // Hide broken images
   event.target.style.display = 'none'
 }

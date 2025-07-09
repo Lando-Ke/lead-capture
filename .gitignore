@@ -141,7 +141,10 @@ dist
 
 # Gatsby files
 .cache/
-public
+
+# Public folder (but keep images)
+/public/*
+!/public/images/
 
 # Storybook build outputs
 .out

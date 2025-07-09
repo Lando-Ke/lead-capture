@@ -4,41 +4,41 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Notification Log Model
- * 
+ * Notification Log Model.
+ *
  * Tracks all notification attempts, outcomes, and performance metrics
  * for comprehensive monitoring and debugging capabilities.
- * 
- * @property int $id
- * @property int|null $lead_id
- * @property string $lead_email
- * @property string $notification_type
- * @property string $title
- * @property string $message
- * @property array|null $additional_data
- * @property string $status
- * @property string|null $notification_id
- * @property array|null $recipients
- * @property string|null $error_code
- * @property string|null $error_message
- * @property array|null $error_details
- * @property float|null $response_time_ms
- * @property float|null $processing_time_ms
- * @property int $attempt_number
- * @property string|null $user_agent
- * @property string|null $ip_address
- * @property array|null $metadata
- * @property array|null $raw_response
- * @property \Carbon\Carbon $attempted_at
+ *
+ * @property int                 $id
+ * @property int|null            $lead_id
+ * @property string              $lead_email
+ * @property string              $notification_type
+ * @property string              $title
+ * @property string              $message
+ * @property array|null          $additional_data
+ * @property string              $status
+ * @property string|null         $notification_id
+ * @property array|null          $recipients
+ * @property string|null         $error_code
+ * @property string|null         $error_message
+ * @property array|null          $error_details
+ * @property float|null          $response_time_ms
+ * @property float|null          $processing_time_ms
+ * @property int                 $attempt_number
+ * @property string|null         $user_agent
+ * @property string|null         $ip_address
+ * @property array|null          $metadata
+ * @property array|null          $raw_response
+ * @property \Carbon\Carbon      $attempted_at
  * @property \Carbon\Carbon|null $completed_at
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon      $created_at
+ * @property \Carbon\Carbon      $updated_at
  */
 class NotificationLog extends Model
 {

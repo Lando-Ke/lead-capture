@@ -17,7 +17,7 @@ final class NotificationLogTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_can_create_notification_log(): void
+    public function itCanCreateNotificationLog(): void
     {
         $log = NotificationLog::factory()->create([
             'notification_id' => 'test-123',
@@ -37,7 +37,7 @@ final class NotificationLogTest extends TestCase
     }
 
     #[Test]
-    public function it_casts_json_attributes_correctly(): void
+    public function itCastsJsonAttributesCorrectly(): void
     {
         $log = NotificationLog::factory()->create([
             'recipients' => ['total' => 10, 'successful' => 8],
@@ -54,7 +54,7 @@ final class NotificationLogTest extends TestCase
     }
 
     #[Test]
-    public function it_scopes_by_status(): void
+    public function itScopesByStatus(): void
     {
         NotificationLog::factory()->create(['status' => 'sent']);
         NotificationLog::factory()->create(['status' => 'failed']);
@@ -68,7 +68,7 @@ final class NotificationLogTest extends TestCase
     }
 
     #[Test]
-    public function it_stores_lead_reference(): void
+    public function itStoresLeadReference(): void
     {
         $log = NotificationLog::factory()->create([
             'lead_email' => 'test@example.com',
@@ -80,7 +80,7 @@ final class NotificationLogTest extends TestCase
     }
 
     #[Test]
-    public function it_handles_nullable_fields(): void
+    public function itHandlesNullableFields(): void
     {
         $log = NotificationLog::factory()->create([
             'notification_id' => null,

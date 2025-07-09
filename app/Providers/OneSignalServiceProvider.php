@@ -10,8 +10,8 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * OneSignal Service Provider
- * 
+ * OneSignal Service Provider.
+ *
  * Handles registration and binding of OneSignal services
  * for dependency injection throughout the application.
  */
@@ -19,8 +19,6 @@ class OneSignalServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -37,8 +35,6 @@ class OneSignalServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -58,4 +54,4 @@ class OneSignalServiceProvider extends ServiceProvider
             'onesignal',
         ];
     }
-} 
+}

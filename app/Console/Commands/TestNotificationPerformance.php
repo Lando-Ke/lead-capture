@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
 
 /**
  * Performance testing command for the notification system.
- * 
+ *
  * Simulates concurrent loads and measures response times,
  * success rates, and system performance under stress.
  */
@@ -27,20 +27,23 @@ final class TestNotificationPerformance extends Command
     protected $description = 'Test notification system performance under load';
 
     private array $results = [];
+
     private array $responseTimes = [];
+
     private array $errors = [];
+
     private Carbon $startTime;
 
     public function handle(): int
     {
         $this->startTime = Carbon::now();
-        
+
         $concurrent = (int) $this->option('concurrent');
         $totalRequests = (int) $this->option('requests');
         $endpoint = $this->option('endpoint');
         $delay = (int) $this->option('delay');
 
-        $this->info("🚀 Starting Performance Test");
+        $this->info('🚀 Starting Performance Test');
         $this->info("   Endpoint: {$endpoint}");
         $this->info("   Total Requests: {$totalRequests}");
         $this->info("   Concurrent: {$concurrent}");
@@ -75,6 +78,7 @@ final class TestNotificationPerformance extends Command
         $this->newLine(2);
 
         $this->displayResults();
+
         return Command::SUCCESS;
     }
 
@@ -92,13 +96,13 @@ final class TestNotificationPerformance extends Command
     private function testLeadSubmissions(int $concurrent): void
     {
         $platform = Platform::first();
-        
+
         Http::pool(function (Pool $pool) use ($concurrent, $platform) {
             for ($i = 0; $i < $concurrent; $i++) {
                 $pool->post('http://127.0.0.1:8000/api/v1/leads', [
                     'name' => "Performance Test User {$i}",
-                    'email' => "perf-test-{$i}-" . time() . "@test.com",
-                    'phone' => "+1234567" . str_pad((string) $i, 3, '0', STR_PAD_LEFT),
+                    'email' => "perf-test-{$i}-" . time() . '@test.com',
+                    'phone' => '+1234567' . str_pad((string) $i, 3, '0', STR_PAD_LEFT),
                     'platform_id' => $platform->id,
                     'website_type' => 'ecommerce',
                     'website_url' => "https://test-{$i}.com",
@@ -140,7 +144,7 @@ final class TestNotificationPerformance extends Command
             $responseTimeMs = $responseTime * 1000;
 
             $this->responseTimes[] = $responseTimeMs;
-            
+
             $result = [
                 'type' => $type,
                 'status_code' => $response->status(),
@@ -166,9 +170,9 @@ final class TestNotificationPerformance extends Command
         $totalRequests = count($this->results);
         $successfulRequests = collect($this->results)->where('success', true)->count();
         $failedRequests = $totalRequests - $successfulRequests;
-        
+
         $successRate = $totalRequests > 0 ? ($successfulRequests / $totalRequests) * 100 : 0;
-        
+
         $totalDuration = $this->startTime->diffInMilliseconds(Carbon::now());
         $requestsPerSecond = $totalRequests > 0 ? ($totalRequests / ($totalDuration / 1000)) : 0;
 
@@ -193,24 +197,24 @@ final class TestNotificationPerformance extends Command
         $this->line("   Total Requests: {$totalRequests}");
         $this->line("   Successful: {$successfulRequests}");
         $this->line("   Failed: {$failedRequests}");
-        $this->line("   Success Rate: " . number_format($successRate, 2) . '%');
-        $this->line("   Total Duration: " . number_format($totalDuration / 1000, 2) . 's');
-        $this->line("   Requests/Second: " . number_format($requestsPerSecond, 2));
+        $this->line('   Success Rate: ' . number_format($successRate, 2) . '%');
+        $this->line('   Total Duration: ' . number_format($totalDuration / 1000, 2) . 's');
+        $this->line('   Requests/Second: ' . number_format($requestsPerSecond, 2));
         $this->newLine();
 
         // Response Time Statistics
         $this->info('⏱️  Response Time Statistics:');
-        $this->line("   Average: " . number_format($avgResponseTime, 2) . 'ms');
-        $this->line("   Min: " . number_format($minResponseTime, 2) . 'ms');
-        $this->line("   Max: " . number_format($maxResponseTime, 2) . 'ms');
-        $this->line("   95th Percentile: " . number_format($p95ResponseTime, 2) . 'ms');
-        $this->line("   99th Percentile: " . number_format($p99ResponseTime, 2) . 'ms');
+        $this->line('   Average: ' . number_format($avgResponseTime, 2) . 'ms');
+        $this->line('   Min: ' . number_format($minResponseTime, 2) . 'ms');
+        $this->line('   Max: ' . number_format($maxResponseTime, 2) . 'ms');
+        $this->line('   95th Percentile: ' . number_format($p95ResponseTime, 2) . 'ms');
+        $this->line('   99th Percentile: ' . number_format($p99ResponseTime, 2) . 'ms');
         $this->newLine();
 
         // Memory Usage
         $this->info('💾 Memory Usage:');
-        $this->line("   Current: " . $this->formatBytes($memoryUsage));
-        $this->line("   Peak: " . $this->formatBytes($peakMemoryUsage));
+        $this->line('   Current: ' . $this->formatBytes($memoryUsage));
+        $this->line('   Peak: ' . $this->formatBytes($peakMemoryUsage));
         $this->newLine();
 
         // Error Analysis
@@ -230,7 +234,7 @@ final class TestNotificationPerformance extends Command
     private function assessPerformance(float $avgResponseTime, float $successRate, float $requestsPerSecond): void
     {
         $this->info('🏆 Performance Assessment:');
-        
+
         // Response Time Assessment
         if ($avgResponseTime < 200) {
             $this->info('   ✅ Excellent response time (< 200ms)');
@@ -268,7 +272,7 @@ final class TestNotificationPerformance extends Command
 
         // Recommendations
         $this->info('💡 Recommendations:');
-        
+
         if ($avgResponseTime > 500) {
             $this->line('   • Consider implementing response caching');
             $this->line('   • Optimize database queries');
@@ -290,12 +294,12 @@ final class TestNotificationPerformance extends Command
     {
         $units = ['B', 'KB', 'MB', 'GB'];
         $unitIndex = 0;
-        
+
         while ($bytes >= 1024 && $unitIndex < count($units) - 1) {
             $bytes /= 1024;
             $unitIndex++;
         }
-        
+
         return number_format($bytes, 2) . ' ' . $units[$unitIndex];
     }
 }

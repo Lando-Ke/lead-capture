@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Controller for monitoring notification status and metrics.
- * 
+ *
  * Provides endpoints for checking OneSignal service health,
  * queue status, and notification statistics.
  */
@@ -20,13 +20,11 @@ final class NotificationStatusController extends Controller
 {
     public function __construct(
         private readonly OneSignalServiceInterface $oneSignalService
-    ) {}
+    ) {
+    }
 
     /**
      * Get comprehensive notification system status.
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
@@ -43,7 +41,6 @@ final class NotificationStatusController extends Controller
                 'success' => true,
                 'data' => $status,
             ]);
-
         } catch (\Exception $e) {
             Log::error('Failed to retrieve notification status', [
                 'error' => $e->getMessage(),
@@ -60,17 +57,15 @@ final class NotificationStatusController extends Controller
 
     /**
      * Test OneSignal connection and get service health.
-     *
-     * @return JsonResponse
      */
     public function health(): JsonResponse
     {
         try {
             $startTime = microtime(true);
-            
+
             $serviceStatus = $this->getServiceStatus();
             $connectionTest = $this->oneSignalService->testConnection();
-            
+
             $healthCheck = [
                 'service' => $serviceStatus,
                 'connection_test' => [
@@ -89,7 +84,6 @@ final class NotificationStatusController extends Controller
                 'success' => $connectionTest->success,
                 'data' => $healthCheck,
             ], $statusCode);
-
         } catch (\Exception $e) {
             Log::error('Notification health check failed', [
                 'error' => $e->getMessage(),
@@ -110,8 +104,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get queue metrics and status.
-     *
-     * @return JsonResponse
      */
     public function queue(): JsonResponse
     {
@@ -123,7 +115,6 @@ final class NotificationStatusController extends Controller
                 'data' => $queueStatus,
                 'timestamp' => now()->toISOString(),
             ]);
-
         } catch (\Exception $e) {
             Log::error('Failed to retrieve queue status', [
                 'error' => $e->getMessage(),
@@ -140,8 +131,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get notification statistics.
-     *
-     * @return JsonResponse
      */
     public function statistics(): JsonResponse
     {
@@ -153,7 +142,6 @@ final class NotificationStatusController extends Controller
                 'data' => $stats,
                 'timestamp' => now()->toISOString(),
             ]);
-
         } catch (\Exception $e) {
             Log::error('Failed to retrieve notification statistics', [
                 'error' => $e->getMessage(),
@@ -170,9 +158,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get paginated notification logs with filtering.
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function logs(Request $request): JsonResponse
     {
@@ -211,9 +196,9 @@ final class NotificationStatusController extends Controller
                 $search = $validated['search'];
                 $query->where(function ($q) use ($search) {
                     $q->where('lead_email', 'like', '%' . $search . '%')
-                      ->orWhere('title', 'like', '%' . $search . '%')
-                      ->orWhere('message', 'like', '%' . $search . '%')
-                      ->orWhere('notification_id', 'like', '%' . $search . '%');
+                        ->orWhere('title', 'like', '%' . $search . '%')
+                        ->orWhere('message', 'like', '%' . $search . '%')
+                        ->orWhere('notification_id', 'like', '%' . $search . '%');
                 });
             }
 
@@ -234,7 +219,6 @@ final class NotificationStatusController extends Controller
                 ],
                 'timestamp' => now()->toISOString(),
             ]);
-
         } catch (\Exception $e) {
             Log::error('Failed to retrieve notification logs', [
                 'error' => $e->getMessage(),
@@ -251,10 +235,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Retry a failed notification.
-     *
-     * @param Request $request
-     * @param int $logId
-     * @return JsonResponse
      */
     public function retryNotification(Request $request, int $logId): JsonResponse
     {
@@ -321,7 +301,6 @@ final class NotificationStatusController extends Controller
                         'processing_time_ms' => $processingTime,
                     ],
                 ]);
-
             } else {
                 $retryLog->markAsFailed(
                     errorCode: $result->errorCode ?? 'retry_failed',
@@ -350,7 +329,6 @@ final class NotificationStatusController extends Controller
                     ],
                 ], 500);
             }
-
         } catch (\Exception $e) {
             Log::error('Failed to retry notification', [
                 'log_id' => $logId,
@@ -368,9 +346,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Send a manual test notification.
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function sendTestNotification(Request $request): JsonResponse
     {
@@ -434,7 +409,6 @@ final class NotificationStatusController extends Controller
                         'processing_time_ms' => $processingTime,
                     ],
                 ]);
-
             } else {
                 $testLog->markAsFailed(
                     errorCode: $result->errorCode ?? 'test_failed',
@@ -455,7 +429,6 @@ final class NotificationStatusController extends Controller
                     ],
                 ], 500);
             }
-
         } catch (\Exception $e) {
             Log::error('Failed to send test notification', [
                 'error' => $e->getMessage(),
@@ -472,9 +445,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get notification analytics and insights.
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function analytics(Request $request): JsonResponse
     {
@@ -484,7 +454,7 @@ final class NotificationStatusController extends Controller
             ]);
 
             $period = $validated['period'] ?? '24h';
-            $startDate = match($period) {
+            $startDate = match ($period) {
                 '24h' => now()->subDay(),
                 '7d' => now()->subWeek(),
                 '30d' => now()->subMonth(),
@@ -504,7 +474,6 @@ final class NotificationStatusController extends Controller
                 ],
                 'timestamp' => now()->toISOString(),
             ]);
-
         } catch (\Exception $e) {
             Log::error('Failed to retrieve notification analytics', [
                 'error' => $e->getMessage(),
@@ -521,13 +490,11 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get OneSignal service status and configuration.
-     *
-     * @return array
      */
     private function getServiceStatus(): array
     {
         $config = $this->oneSignalService->getConfiguration();
-        
+
         return [
             'enabled' => $this->oneSignalService->isEnabled(),
             'configured' => $this->oneSignalService->isConfigured(),
@@ -539,14 +506,12 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get queue status and metrics.
-     *
-     * @return array
      */
     private function getQueueStatus(): array
     {
         // Get total pending jobs
         $totalPending = DB::table('jobs')->count();
-        
+
         // Get notifications queue specific jobs
         $notificationsPending = DB::table('jobs')
             ->where('queue', 'notifications')
@@ -582,8 +547,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get notification statistics from database.
-     *
-     * @return array
      */
     private function getNotificationStatistics(): array
     {
@@ -603,7 +566,7 @@ final class NotificationStatusController extends Controller
                 'this_week' => $leadsThisWeek,
             ],
             'notifications' => [
-                // Note: In a production system, you might want to store 
+                // Note: In a production system, you might want to store
                 // notification history in a dedicated table for better tracking
                 'estimated_sent' => $totalLeads, // Simplified for now
                 'note' => 'Detailed notification tracking would require dedicated storage',
@@ -613,14 +576,12 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get recent notification activity from logs.
-     *
-     * @return array
      */
     private function getRecentActivity(): array
     {
         // In a production system, you might want to store this in a database
         // For now, we'll return a simplified version
-        
+
         $recentLeads = DB::table('leads')
             ->orderBy('created_at', 'desc')
             ->limit(5)
@@ -642,9 +603,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get notification analytics for a given time period.
-     *
-     * @param \Carbon\Carbon $startDate
-     * @return array
      */
     private function getNotificationAnalytics(\Carbon\Carbon $startDate): array
     {
@@ -713,10 +671,6 @@ final class NotificationStatusController extends Controller
 
     /**
      * Get hourly notification breakdown for detailed analysis.
-     *
-     * @param \Carbon\Carbon $startDate
-     * @param \Carbon\Carbon $endDate
-     * @return array
      */
     private function getHourlyNotificationBreakdown(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate): array
     {
@@ -725,7 +679,7 @@ final class NotificationStatusController extends Controller
 
         while ($current->lte($endDate)) {
             $nextHour = $current->copy()->addHour();
-            
+
             $hourData = \App\Models\NotificationLog::whereBetween('attempted_at', [$current, $nextHour])
                 ->selectRaw('
                     COUNT(*) as total,
@@ -748,4 +702,4 @@ final class NotificationStatusController extends Controller
 
         return $breakdown;
     }
-} 
+}

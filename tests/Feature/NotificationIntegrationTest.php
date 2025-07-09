@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Lead;
-use App\Models\NotificationLog;
 use App\Models\Platform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -24,7 +23,7 @@ final class NotificationIntegrationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->platform = Platform::factory()->create([
             'name' => 'Test Platform',
             'website_types' => ['business'],
@@ -40,7 +39,7 @@ final class NotificationIntegrationTest extends TestCase
     }
 
     #[Test]
-    public function it_completes_lead_submission_with_notification(): void
+    public function itCompletesLeadSubmissionWithNotification(): void
     {
         Http::fake([
             'onesignal.com/api/v1/notifications' => Http::response([
@@ -77,7 +76,7 @@ final class NotificationIntegrationTest extends TestCase
     }
 
     #[Test]
-    public function it_handles_notification_failure_gracefully(): void
+    public function itHandlesNotificationFailureGracefully(): void
     {
         Http::fake([
             'onesignal.com/api/v1/notifications' => Http::response([
@@ -103,7 +102,7 @@ final class NotificationIntegrationTest extends TestCase
     }
 
     #[Test]
-    public function it_skips_notifications_for_test_emails(): void
+    public function itSkipsNotificationsForTestEmails(): void
     {
         Http::fake(); // No HTTP calls should be made
 
@@ -135,7 +134,7 @@ final class NotificationIntegrationTest extends TestCase
     }
 
     #[Test]
-    public function it_handles_disabled_service(): void
+    public function itHandlesDisabledService(): void
     {
         // Disable OneSignal service
         config(['services.onesignal.enabled' => false]);
@@ -165,7 +164,7 @@ final class NotificationIntegrationTest extends TestCase
     }
 
     #[Test]
-    public function it_validates_required_fields(): void
+    public function itValidatesRequiredFields(): void
     {
         $response = $this->postJson('/api/v1/leads', [
             'platform_id' => $this->platform->id,
@@ -176,7 +175,7 @@ final class NotificationIntegrationTest extends TestCase
         ]);
 
         $response->assertStatus(422)
-                ->assertJsonValidationErrors(['company']);
+            ->assertJsonValidationErrors(['company']);
 
         // Verify no lead was created
         $this->assertDatabaseMissing('leads', [

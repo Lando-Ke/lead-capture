@@ -6,7 +6,7 @@ namespace App\DTOs;
 
 /**
  * Data Transfer Object for OneSignal notification results.
- * 
+ *
  * Provides consistent response handling for notification operations
  * with proper success/error state management and debugging information.
  */
@@ -21,16 +21,11 @@ class NotificationResultDTO
         public readonly ?array $errorDetails = null,
         public readonly ?float $responseTime = null,
         public readonly ?array $rawResponse = null
-    ) {}
+    ) {
+    }
 
     /**
      * Create a successful notification result.
-     *
-     * @param string|null $notificationId
-     * @param array|null $recipients
-     * @param float|null $responseTime
-     * @param array|null $rawResponse
-     * @return self
      */
     public static function success(
         ?string $notificationId = null,
@@ -50,13 +45,6 @@ class NotificationResultDTO
 
     /**
      * Create a failed notification result.
-     *
-     * @param string $message
-     * @param string|null $errorCode
-     * @param array|null $errorDetails
-     * @param float|null $responseTime
-     * @param array|null $rawResponse
-     * @return self
      */
     public static function failure(
         string $message,
@@ -77,8 +65,6 @@ class NotificationResultDTO
 
     /**
      * Create a disabled service result.
-     *
-     * @return self
      */
     public static function disabled(): self
     {
@@ -90,8 +76,6 @@ class NotificationResultDTO
 
     /**
      * Convert to array representation.
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -109,15 +93,13 @@ class NotificationResultDTO
 
     /**
      * Get user-friendly status message.
-     *
-     * @return string
      */
     public function getStatusMessage(): string
     {
         if ($this->success) {
-            return $this->notificationId 
+            return $this->notificationId
                 ? "Notification sent successfully (ID: {$this->notificationId})"
-                : "Notification queued successfully";
+                : 'Notification queued successfully';
         }
 
         return $this->message ?? 'Notification failed';
@@ -125,8 +107,6 @@ class NotificationResultDTO
 
     /**
      * Check if this is a temporary failure that should be retried.
-     *
-     * @return bool
      */
     public function isRetryable(): bool
     {
@@ -149,4 +129,4 @@ class NotificationResultDTO
 
         return $this->errorCode && in_array($this->errorCode, $retryableErrors, true);
     }
-} 
+}

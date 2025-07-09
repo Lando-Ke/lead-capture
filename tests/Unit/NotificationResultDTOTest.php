@@ -14,7 +14,7 @@ use Tests\TestCase;
 final class NotificationResultDTOTest extends TestCase
 {
     #[Test]
-    public function it_creates_successful_result(): void
+    public function itCreatesSuccessfulResult(): void
     {
         $result = NotificationResultDTO::success(
             notificationId: 'test-123',
@@ -30,7 +30,7 @@ final class NotificationResultDTOTest extends TestCase
     }
 
     #[Test]
-    public function it_creates_failure_result(): void
+    public function itCreatesFailureResult(): void
     {
         $result = NotificationResultDTO::failure(
             message: 'Authentication failed',
@@ -45,7 +45,7 @@ final class NotificationResultDTOTest extends TestCase
     }
 
     #[Test]
-    public function it_creates_disabled_result(): void
+    public function itCreatesDisabledResult(): void
     {
         $result = NotificationResultDTO::disabled();
 
@@ -56,7 +56,7 @@ final class NotificationResultDTOTest extends TestCase
     }
 
     #[Test]
-    public function it_determines_retryability_correctly(): void
+    public function itDeterminesRetryabilityCorrectly(): void
     {
         // Retryable errors
         $retryable = NotificationResultDTO::failure('Server error', '500');
@@ -74,7 +74,7 @@ final class NotificationResultDTOTest extends TestCase
     }
 
     #[Test]
-    public function it_converts_to_array(): void
+    public function itConvertsToArray(): void
     {
         $result = NotificationResultDTO::success(
             notificationId: 'test-456',
@@ -89,7 +89,7 @@ final class NotificationResultDTOTest extends TestCase
     }
 
     #[Test]
-    public function it_provides_status_message(): void
+    public function itProvidesStatusMessage(): void
     {
         $success = NotificationResultDTO::success(notificationId: 'test-123');
         $this->assertEquals('Notification sent successfully (ID: test-123)', $success->getStatusMessage());

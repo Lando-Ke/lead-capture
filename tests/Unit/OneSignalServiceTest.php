@@ -36,7 +36,7 @@ final class OneSignalServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_sends_lead_submission_notification_successfully(): void
+    public function itSendsLeadSubmissionNotificationSuccessfully(): void
     {
         Http::fake([
             'onesignal.com/api/v1/notifications' => Http::response([
@@ -53,7 +53,7 @@ final class OneSignalServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_sends_custom_notification_successfully(): void
+    public function itSendsCustomNotificationSuccessfully(): void
     {
         Http::fake([
             'onesignal.com/api/v1/notifications' => Http::response([
@@ -69,7 +69,7 @@ final class OneSignalServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_disabled_result_when_service_is_disabled(): void
+    public function itReturnsDisabledResultWhenServiceIsDisabled(): void
     {
         Config::set('services.onesignal.enabled', false);
         $service = new OneSignalService();
@@ -81,7 +81,7 @@ final class OneSignalServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_handles_api_error_responses(): void
+    public function itHandlesApiErrorResponses(): void
     {
         Http::fake([
             'onesignal.com/api/v1/notifications' => Http::response([
@@ -96,7 +96,7 @@ final class OneSignalServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_tests_connection_successfully(): void
+    public function itTestsConnectionSuccessfully(): void
     {
         Http::fake([
             'onesignal.com/api/v1/apps/test-app-id' => Http::response([
@@ -112,7 +112,7 @@ final class OneSignalServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_service_is_enabled(): void
+    public function itChecksIfServiceIsEnabled(): void
     {
         $this->assertTrue($this->service->isEnabled());
 
@@ -122,7 +122,7 @@ final class OneSignalServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_configuration(): void
+    public function itGetsConfiguration(): void
     {
         $config = $this->service->getConfiguration();
 
@@ -132,7 +132,7 @@ final class OneSignalServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_app_info(): void
+    public function itGetsAppInfo(): void
     {
         Http::fake([
             'onesignal.com/api/v1/apps/test-app-id' => Http::response([

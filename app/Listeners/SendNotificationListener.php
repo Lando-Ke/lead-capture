@@ -10,14 +10,13 @@ use App\Models\NotificationLog;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 /**
  * Listener for handling lead submission notifications.
- * 
+ *
  * Processes LeadSubmittedEvent asynchronously via queue to send
  * OneSignal push notifications without blocking form submissions.
- * 
+ *
  * Enhanced with comprehensive notification logging and tracking.
  */
 class SendNotificationListener implements ShouldQueue
@@ -26,15 +25,11 @@ class SendNotificationListener implements ShouldQueue
 
     /**
      * The number of times the queued listener may be attempted.
-     *
-     * @var int
      */
     public int $tries = 3;
 
     /**
      * The maximum number of seconds the job can run.
-     *
-     * @var int
      */
     public int $timeout = 60;
 
@@ -47,18 +42,14 @@ class SendNotificationListener implements ShouldQueue
 
     /**
      * Create the event listener.
-     *
-     * @param OneSignalServiceInterface $oneSignalService
      */
     public function __construct(
         private readonly OneSignalServiceInterface $oneSignalService
-    ) {}
+    ) {
+    }
 
     /**
      * Handle the event.
-     *
-     * @param LeadSubmittedEvent $event
-     * @return void
      */
     public function handle(LeadSubmittedEvent $event): void
     {
@@ -90,7 +81,7 @@ class SendNotificationListener implements ShouldQueue
             // Check if notifications should be sent for this lead
             if (!$event->shouldTriggerNotifications()) {
                 $reason = 'Test email pattern detected';
-                
+
                 Log::info('Skipping notification for test/demo lead', [
                     'lead_email' => $event->getLeadEmail(),
                     'reason' => $reason,
@@ -108,7 +99,7 @@ class SendNotificationListener implements ShouldQueue
             // Check if OneSignal service is enabled
             if (!$this->oneSignalService->isEnabled()) {
                 $reason = 'OneSignal service is disabled';
-                
+
                 Log::info('OneSignal notifications disabled, skipping', [
                     'lead_email' => $event->getLeadEmail(),
                     'log_id' => $notificationLog->id,
@@ -147,7 +138,6 @@ class SendNotificationListener implements ShouldQueue
 
                 // Record success metrics if needed
                 $this->recordSuccessMetrics($event, $result, $notificationLog);
-
             } else {
                 Log::warning('Lead notification failed', [
                     'lead_email' => $event->getLeadEmail(),
@@ -172,16 +162,16 @@ class SendNotificationListener implements ShouldQueue
                 // Determine if we should retry
                 if ($result->isRetryable() && $this->attempts() < $this->tries) {
                     $this->release($this->getRetryDelay());
+
                     return;
                 }
 
                 // Record failure metrics
                 $this->recordFailureMetrics($event, $result, $notificationLog);
             }
-
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $processingTime = round((microtime(true) - $startTime) * 1000, 2);
-            
+
             Log::error('Unexpected error processing lead notification', [
                 'lead_email' => $event->getLeadEmail(),
                 'error' => $e->getMessage(),
@@ -209,6 +199,7 @@ class SendNotificationListener implements ShouldQueue
             // Retry on unexpected errors
             if ($this->attempts() < $this->tries) {
                 $this->release($this->getRetryDelay());
+
                 return;
             }
 
@@ -219,12 +210,8 @@ class SendNotificationListener implements ShouldQueue
 
     /**
      * Handle a job failure.
-     *
-     * @param LeadSubmittedEvent $event
-     * @param Exception $exception
-     * @return void
      */
-    public function failed(LeadSubmittedEvent $event, Exception $exception): void
+    public function failed(LeadSubmittedEvent $event, \Exception $exception): void
     {
         Log::critical('Lead notification listener failed permanently', [
             'lead_email' => $event->getLeadEmail(),
@@ -256,35 +243,29 @@ class SendNotificationListener implements ShouldQueue
 
     /**
      * Get the lead ID from the database.
-     *
-     * @param LeadSubmittedEvent $event
-     * @return int|null
      */
     private function getLeadId(LeadSubmittedEvent $event): ?int
     {
         // Try to find the lead by email to get the ID
         $lead = \App\Models\Lead::where('email', $event->getLeadEmail())->first();
+
         return $lead?->id;
     }
 
     /**
      * Get the retry delay for the current attempt.
-     *
-     * @return int
      */
     private function getRetryDelay(): int
     {
         $attempt = $this->attempts();
+
         return $this->backoff[$attempt - 1] ?? end($this->backoff);
     }
 
     /**
      * Record success metrics.
      *
-     * @param LeadSubmittedEvent $event
      * @param \App\DTOs\NotificationResultDTO $result
-     * @param NotificationLog $notificationLog
-     * @return void
      */
     private function recordSuccessMetrics(LeadSubmittedEvent $event, $result, NotificationLog $notificationLog): void
     {
@@ -301,10 +282,7 @@ class SendNotificationListener implements ShouldQueue
     /**
      * Record failure metrics.
      *
-     * @param LeadSubmittedEvent $event
      * @param \App\DTOs\NotificationResultDTO $result
-     * @param NotificationLog $notificationLog
-     * @return void
      */
     private function recordFailureMetrics(LeadSubmittedEvent $event, $result, NotificationLog $notificationLog): void
     {
@@ -320,13 +298,8 @@ class SendNotificationListener implements ShouldQueue
 
     /**
      * Record critical failure.
-     *
-     * @param LeadSubmittedEvent $event
-     * @param Exception $exception
-     * @param NotificationLog|null $notificationLog
-     * @return void
      */
-    private function recordCriticalFailure(LeadSubmittedEvent $event, Exception $exception, ?NotificationLog $notificationLog): void
+    private function recordCriticalFailure(LeadSubmittedEvent $event, \Exception $exception, ?NotificationLog $notificationLog): void
     {
         Log::debug('Recording critical failure', [
             'lead_email' => $event->getLeadEmail(),
@@ -344,8 +317,6 @@ class SendNotificationListener implements ShouldQueue
 
     /**
      * Determine the queue that should handle the job.
-     *
-     * @return string
      */
     public function viaQueue(): string
     {
@@ -354,12 +325,10 @@ class SendNotificationListener implements ShouldQueue
 
     /**
      * Get the middleware the job should pass through.
-     *
-     * @return array
      */
     public function middleware(): array
     {
         // Add rate limiting, throttling, or other middleware as needed
         return [];
     }
-} 
+}

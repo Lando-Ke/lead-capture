@@ -11,29 +11,27 @@ use Illuminate\Queue\SerializesModels;
 
 /**
  * Event fired when a new lead is submitted.
- * 
+ *
  * This event triggers asynchronous notification processing
  * to avoid blocking the user's form submission experience.
  */
 class LeadSubmittedEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * Create a new event instance.
-     *
-     * @param LeadDTO $leadData
-     * @param array $additionalMetadata
      */
     public function __construct(
         public readonly LeadDTO $leadData,
         public readonly array $additionalMetadata = []
-    ) {}
+    ) {
+    }
 
     /**
      * Get the lead's email for notification purposes.
-     *
-     * @return string
      */
     public function getLeadEmail(): string
     {
@@ -42,8 +40,6 @@ class LeadSubmittedEvent
 
     /**
      * Get formatted lead information for notifications.
-     *
-     * @return array
      */
     public function getLeadInfo(): array
     {
@@ -58,8 +54,6 @@ class LeadSubmittedEvent
 
     /**
      * Get event metadata for logging and debugging.
-     *
-     * @return array
      */
     public function getEventMetadata(): array
     {
@@ -73,14 +67,12 @@ class LeadSubmittedEvent
 
     /**
      * Check if this event should trigger notifications.
-     *
-     * @return bool
      */
     public function shouldTriggerNotifications(): bool
     {
         // Add any business logic here to determine if notifications should be sent
         // For example, exclude test emails, check platform settings, etc.
-        
+
         // Skip notifications for test/demo emails
         $testEmailPatterns = [
             'test@',
@@ -89,21 +81,19 @@ class LeadSubmittedEvent
             '+test',
             '@test.',
         ];
-        
+
         $email = strtolower($this->leadData->email);
         foreach ($testEmailPatterns as $pattern) {
             if (str_contains($email, $pattern)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
      * Get notification data for OneSignal.
-     *
-     * @return array
      */
     public function getNotificationData(): array
     {
@@ -117,4 +107,4 @@ class LeadSubmittedEvent
             'metadata' => $this->additionalMetadata,
         ];
     }
-} 
+}

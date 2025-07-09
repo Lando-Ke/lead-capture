@@ -9,8 +9,8 @@ use App\Listeners\SendNotificationListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 /**
- * Event Service Provider
- * 
+ * Event Service Provider.
+ *
  * Handles registration of application events and their listeners
  * following the project's pattern of dedicated service providers.
  */
@@ -32,7 +32,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
     }
 
     /**
@@ -42,4 +41,4 @@ class EventServiceProvider extends ServiceProvider
     {
         return false;
     }
-} 
+}

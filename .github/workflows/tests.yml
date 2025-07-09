@@ -48,7 +48,6 @@ jobs:
           cp .env.example .env.testing
           php artisan key:generate
           php artisan key:generate --env=testing
-          php artisan config:cache
 
       - name: Update environment for testing
         run: |
@@ -62,6 +61,9 @@ jobs:
           echo "SESSION_DRIVER=array" >> .env.testing
           echo "CACHE_STORE=array" >> .env.testing
           echo "MAIL_MAILER=array" >> .env.testing
+
+      - name: Cache configuration
+        run: php artisan config:cache
 
       - name: Create Database
         run: |

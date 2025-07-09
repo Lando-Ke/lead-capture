@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12-red.svg" alt="Laravel 12">
   <img src="https://img.shields.io/badge/Vue.js-3-green.svg" alt="Vue.js 3">
-  <img src="https://img.shields.io/badge/Tailwind-CSS-blue.svg" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Tailwind-CSS-blue.svg" alt='Tailwind CSS'>
   <img src="https://img.shields.io/badge/Pinia-State-yellow.svg" alt="Pinia">
   <img src="https://img.shields.io/badge/Tests-Vitest%20%7C%20PHPUnit-brightgreen.svg" alt="Testing">
 </p>

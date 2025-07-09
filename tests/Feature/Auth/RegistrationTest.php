@@ -9,6 +9,14 @@ class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Disable CSRF for auth tests
+        $this->withoutCsrf();
+    }
+
     public function testRegistrationScreenCanBeRendered(): void
     {
         $response = $this->get('/register');

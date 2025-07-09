@@ -10,6 +10,14 @@ class PasswordConfirmationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Disable CSRF for auth tests
+        $this->withoutCsrf();
+    }
+
     public function testConfirmPasswordScreenCanBeRendered(): void
     {
         $user = User::factory()->create();

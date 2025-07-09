@@ -10,6 +10,14 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Disable CSRF for auth tests
+        $this->withoutCsrf();
+    }
+
     public function testLoginScreenCanBeRendered(): void
     {
         $response = $this->get('/login');

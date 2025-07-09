@@ -12,6 +12,17 @@ class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Disable CSRF for auth tests
+        $this->withoutCsrf();
+
+        // Fake notifications for password reset tests
+        Notification::fake();
+    }
+
     public function testResetPasswordLinkScreenCanBeRendered(): void
     {
         $response = $this->get('/forgot-password');
@@ -21,8 +32,6 @@ class PasswordResetTest extends TestCase
 
     public function testResetPasswordLinkCanBeRequested(): void
     {
-        Notification::fake();
-
         $user = User::factory()->create();
 
         $this->post('/forgot-password', ['email' => $user->email]);
@@ -32,8 +41,6 @@ class PasswordResetTest extends TestCase
 
     public function testResetPasswordScreenCanBeRendered(): void
     {
-        Notification::fake();
-
         $user = User::factory()->create();
 
         $this->post('/forgot-password', ['email' => $user->email]);
@@ -49,8 +56,6 @@ class PasswordResetTest extends TestCase
 
     public function testPasswordCanBeResetWithValidToken(): void
     {
-        Notification::fake();
-
         $user = User::factory()->create();
 
         $this->post('/forgot-password', ['email' => $user->email]);

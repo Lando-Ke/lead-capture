@@ -12,11 +12,20 @@ abstract class TestCase extends BaseTestCase
 
         // Ensure the application is properly configured for testing
         $this->withoutVite();
-        
-        // Disable CSRF protection for testing
+
+        // Start session for proper state management
+        $this->startSession();
+    }
+
+    /**
+     * Disable CSRF protection for the current test.
+     *
+     * @return $this
+     */
+    protected function withoutCsrf()
+    {
         $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
-        
-        // Fake notifications to prevent actual sending during tests
-        \Illuminate\Support\Facades\Notification::fake();
+
+        return $this;
     }
 }

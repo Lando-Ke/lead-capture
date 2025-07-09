@@ -10,6 +10,14 @@ class ProfileTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Disable CSRF for profile tests
+        $this->withoutCsrf();
+    }
+
     public function testProfilePageIsDisplayed(): void
     {
         $user = User::factory()->create();

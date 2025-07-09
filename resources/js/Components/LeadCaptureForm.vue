@@ -7,8 +7,26 @@
     </div>
 
     <!-- Progress Indicator -->
-    <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
-      <div class="flex items-center justify-between">
+    <div class="bg-white rounded-lg shadow-sm border p-4 md:p-6 mb-6">
+      <!-- Mobile Progress Bar -->
+      <div class="block md:hidden">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium text-gray-700">Step {{ currentStep + 1 }} of {{ steps.length }}</span>
+          <span class="text-sm text-gray-500">{{ Math.round(((currentStep + 1) / steps.length) * 100) }}%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div 
+            class="bg-gray-900 h-2 rounded-full transition-all duration-300 ease-in-out"
+            :style="{ width: `${((currentStep + 1) / steps.length) * 100}%` }"
+          ></div>
+        </div>
+        <div class="mt-2 text-center">
+          <span class="text-sm font-medium text-gray-900">{{ steps[currentStep].title }}</span>
+        </div>
+      </div>
+
+      <!-- Desktop Step Indicators -->
+      <div class="hidden md:flex items-center justify-between">
         <div 
           v-for="(step, index) in steps"
           :key="index"
@@ -18,7 +36,7 @@
           <div class="flex items-center">
             <div
               :class="[
-                'flex items-center justify-center w-10 h-10 rounded-full border-2 text-sm font-medium',
+                'flex items-center justify-center w-10 h-10 rounded-full border-2 text-sm font-medium transition-all duration-200',
                 index < currentStep
                   ? 'bg-gray-900 border-gray-900 text-white'
                   : index === currentStep
@@ -34,7 +52,7 @@
           <div
             v-if="index < steps.length - 1"
             :class="[
-              'flex-1 h-px mx-4',
+              'flex-1 h-px mx-4 transition-all duration-300',
               index < currentStep ? 'bg-gray-900' : 'bg-gray-200'
             ]"
           />
@@ -43,7 +61,7 @@
     </div>
 
     <!-- Form Steps -->
-    <div class="bg-white rounded-lg shadow-sm border p-8">
+    <div class="bg-white rounded-lg shadow-sm border p-4 md:p-8">
       <form @submit.prevent="handleSubmit">
         <!-- Step 1: Basic Information -->
         <div v-show="currentStep === 0">

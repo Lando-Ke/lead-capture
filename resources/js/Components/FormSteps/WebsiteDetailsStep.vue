@@ -1,9 +1,7 @@
 <template>
   <div class="space-y-6">
     <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">
-        Website Details
-      </h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Website Details</h2>
       <p class="text-gray-600">
         Tell us about the type of website you're looking to build or improve.
       </p>
@@ -13,18 +11,15 @@
       <label class="block text-sm font-medium text-gray-700 mb-4">
         Website Type <span class="text-red-500">*</span>
       </label>
-      
+
       <div class="space-y-3">
-        <div
-          v-for="type in websiteTypes"
-          :key="type.value"
-          class="relative"
-        >
-          <label 
+        <div v-for="type in websiteTypes" :key="type.value" class="relative">
+          <label
             class="flex items-start p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors duration-200"
-            :class="{ 
-              'border-gray-900 bg-gray-50 ring-2 ring-gray-900': formData.website_type === type.value,
-              'border-gray-300': formData.website_type !== type.value 
+            :class="{
+              'border-gray-900 bg-gray-50 ring-2 ring-gray-900':
+                formData.website_type === type.value,
+              'border-gray-300': formData.website_type !== type.value,
             }"
           >
             <input
@@ -33,7 +28,7 @@
               type="radio"
               class="mt-1 h-4 w-4 text-gray-900 border-gray-300 focus:ring-gray-900 focus:ring-2"
               @change="handleWebsiteTypeChange(type.value)"
-            >
+            />
             <div class="ml-3 flex-1">
               <div class="flex items-center">
                 <span class="text-lg mr-2">{{ type.icon }}</span>
@@ -44,7 +39,7 @@
           </label>
         </div>
       </div>
-      
+
       <p v-if="errors.website_type" class="mt-2 text-sm text-red-600">
         {{ errors.website_type[0] }}
       </p>
@@ -60,7 +55,7 @@
         <ChevronLeftIcon class="w-4 h-4 mr-2" />
         Previous
       </button>
-      
+
       <button
         type="button"
         :disabled="!canProceed"
@@ -68,7 +63,7 @@
           'flex items-center px-6 py-3 rounded-lg text-sm font-medium transition-colors duration-200',
           canProceed
             ? 'bg-gray-900 text-white hover:bg-gray-800 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed',
         ]"
         @click="handleNext"
       >
@@ -89,8 +84,8 @@ import { usePlatformStore } from '@/stores/platformStore'
 const props = defineProps({
   errors: {
     type: Object,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 })
 
 // Emits
@@ -109,7 +104,7 @@ const canProceed = computed(() => {
 })
 
 // Methods
-const handleWebsiteTypeChange = (websiteType) => {
+const handleWebsiteTypeChange = websiteType => {
   leadStore.updateFormField('website_type', websiteType)
   emit('website-type-change', websiteType)
 }
@@ -119,9 +114,9 @@ const handleNext = () => {
     leadStore.setError('website_type', 'Please select a website type.')
     return
   }
-  
+
   if (canProceed.value) {
     emit('next')
   }
 }
-</script> 
+</script>

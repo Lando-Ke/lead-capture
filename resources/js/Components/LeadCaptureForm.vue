@@ -2,11 +2,10 @@
   <div class="max-w-4xl mx-auto">
     <!-- Header -->
     <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-4">
-        Get Started with Your Project
-      </h1>
+      <h1 class="text-3xl font-bold text-gray-900 mb-4">Get Started with Your Project</h1>
       <p class="text-gray-600">
-        Fill out this form to tell us about your project needs. We'll get back to you within 24 hours with a personalized consultation.
+        Fill out this form to tell us about your project needs. We'll get back to you within 24
+        hours with a personalized consultation.
       </p>
     </div>
 
@@ -15,11 +14,15 @@
       <!-- Mobile Progress Bar -->
       <div class="block md:hidden">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-sm font-medium text-gray-700">Step {{ currentStep + 1 }} of {{ steps.length }}</span>
-          <span class="text-sm text-gray-500">{{ Math.round(((currentStep + 1) / steps.length) * 100) }}%</span>
+          <span class="text-sm font-medium text-gray-700"
+            >Step {{ currentStep + 1 }} of {{ steps.length }}</span
+          >
+          <span class="text-sm text-gray-500"
+            >{{ Math.round(((currentStep + 1) / steps.length) * 100) }}%</span
+          >
         </div>
         <div class="w-full bg-gray-200 rounded-full h-2">
-          <div 
+          <div
             class="bg-gray-900 h-2 rounded-full transition-all duration-300 ease-in-out"
             :style="{ width: `${((currentStep + 1) / steps.length) * 100}%` }"
           />
@@ -31,7 +34,7 @@
 
       <!-- Desktop Step Indicators -->
       <div class="hidden md:flex items-center justify-between">
-        <div 
+        <div
           v-for="(step, index) in steps"
           :key="index"
           class="flex items-center"
@@ -45,7 +48,7 @@
                   ? 'bg-gray-900 border-gray-900 text-white'
                   : index === currentStep
                     ? 'bg-white border-gray-900 text-gray-900'
-                    : 'bg-gray-100 border-gray-300 text-gray-400'
+                    : 'bg-gray-100 border-gray-300 text-gray-400',
               ]"
             >
               <CheckIcon v-if="index < currentStep" class="w-5 h-5" />
@@ -57,7 +60,7 @@
             v-if="index < steps.length - 1"
             :class="[
               'flex-1 h-px mx-4 transition-all duration-300',
-              index < currentStep ? 'bg-gray-900' : 'bg-gray-200'
+              index < currentStep ? 'bg-gray-900' : 'bg-gray-200',
             ]"
           />
         </div>
@@ -69,10 +72,7 @@
       <form @submit.prevent="handleSubmit">
         <!-- Step 1: Basic Information -->
         <div v-show="currentStep === 0">
-          <BasicInformationStep
-            :errors="leadStore.errors"
-            @next="nextStep"
-          />
+          <BasicInformationStep :errors="leadStore.errors" @next="nextStep" />
         </div>
 
         <!-- Step 2: Website Details -->
@@ -113,19 +113,17 @@
 
     <!-- Support Contact -->
     <div class="text-center mt-6 text-sm text-gray-500">
-      Need help? Contact our support team at 
-      <a href="mailto:support@example.com" class="text-blue-600 hover:underline">support@example.com</a>
+      Need help? Contact our support team at
+      <a href="mailto:support@example.com" class="text-blue-600 hover:underline"
+        >support@example.com</a
+      >
     </div>
 
     <!-- Success Modal -->
-    <SuccessModal
-      v-if="showSuccess"
-      :lead-data="submittedLead"
-      @close="resetForm"
-    />
+    <SuccessModal v-if="showSuccess" :lead-data="submittedLead" @close="resetForm" />
 
     <!-- Error Alert -->
-    <div 
+    <div
       v-if="leadStore.hasErrors && leadStore.errors.general"
       class="fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg z-50"
     >
@@ -134,7 +132,10 @@
         <p class="text-sm text-red-800">
           {{ leadStore.errors.general[0] }}
         </p>
-        <button class="ml-2 text-red-400 hover:text-red-600" @click="leadStore.clearError('general')">
+        <button
+          class="ml-2 text-red-400 hover:text-red-600"
+          @click="leadStore.clearError('general')"
+        >
           <XMarkIcon class="h-4 w-4" />
         </button>
       </div>
@@ -191,16 +192,16 @@ const previousStep = () => {
   }
 }
 
-const goToStep = (step) => {
+const goToStep = step => {
   // Validate that we can go to this step
   if (step >= 0 && step < steps.length) {
     currentStep.value = step
   }
 }
 
-const handleWebsiteTypeChange = async (websiteType) => {
+const handleWebsiteTypeChange = async websiteType => {
   leadStore.updateFormField('website_type', websiteType)
-  
+
   // Fetch platforms for the selected website type
   if (websiteType) {
     await platformStore.fetchPlatformsByWebsiteType(websiteType)
@@ -213,10 +214,10 @@ const handleWebsiteTypeChange = async (websiteType) => {
 
 const handleSubmit = async () => {
   if (!canSubmit.value) return
-  
+
   try {
     const result = await leadStore.submitLead()
-    
+
     if (result.success) {
       submittedLead.value = result.data
       showSuccess.value = true
@@ -239,4 +240,4 @@ const resetForm = () => {
 onMounted(async () => {
   await platformStore.initializePlatforms()
 })
-</script> 
+</script>

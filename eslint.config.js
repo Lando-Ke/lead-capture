@@ -25,9 +25,9 @@ export default [
         beforeAll: 'readonly',
         afterAll: 'readonly',
         // Laravel/Inertia.js globals
-        route: 'readonly'
-      }
-    }
+        route: 'readonly',
+      },
+    },
   },
 
   // Base JavaScript rules
@@ -54,21 +54,20 @@ export default [
       'vue/prop-name-casing': ['error', 'camelCase'],
       'vue/attribute-hyphenation': ['error', 'always'],
       'vue/v-on-event-hyphenation': ['error', 'always'],
-      'vue/max-attributes-per-line': ['error', {
-        'singleline': { 'max': 3 },
-        'multiline': { 'max': 1 }
-      }],
-      'vue/html-indent': ['error', 2],
-      'vue/script-indent': ['error', 2, { 'baseIndent': 0 }],
-      'vue/no-spaces-around-equal-signs-in-attribute': 'error',
-      'vue/mustache-interpolation-spacing': ['error', 'always'],
-      'vue/no-multi-spaces': 'error',
-      'vue/html-closing-bracket-spacing': 'error',
-      'vue/html-closing-bracket-newline': ['error', {
-        'singleline': 'never',
-        'multiline': 'always'
-      }]
-    }
+      
+      // Disable Vue formatting rules that conflict with Prettier
+      'vue/max-attributes-per-line': 'off',
+      'vue/html-indent': 'off',
+      'vue/script-indent': 'off',
+      'vue/html-closing-bracket-spacing': 'off',
+      'vue/html-closing-bracket-newline': 'off',
+      'vue/html-self-closing': 'off',
+      'vue/singleline-html-element-content-newline': 'off',
+      'vue/multiline-html-element-content-newline': 'off',
+      'vue/no-spaces-around-equal-signs-in-attribute': 'off',
+      'vue/mustache-interpolation-spacing': 'off',
+      'vue/no-multi-spaces': 'off'
+    },
   },
 
   // Ignore patterns
@@ -80,7 +79,7 @@ export default [
       'storage/**',
       'bootstrap/cache/**',
       'dist/**',
-      '*.min.js'
-    ]
-  }
-] 
+      '*.min.js',
+    ],
+  },
+]

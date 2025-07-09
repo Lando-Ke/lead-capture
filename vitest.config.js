@@ -17,24 +17,22 @@ export default defineConfig({
         'coverage/**',
         '**/*.config.js',
         '**/*.config.ts',
-        '**/vendor/**'
+        '**/vendor/**',
       ],
-      include: [
-        'resources/js/**/*.{js,vue}'
-      ],
+      include: ['resources/js/**/*.{js,vue}'],
       threshold: {
         global: {
           branches: 70,
           functions: 70,
           lines: 70,
-          statements: 70
-        }
-      }
-    }
+          statements: 70,
+        },
+      },
+    },
   },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'resources/js'),
     },
   },
-}) 
+})

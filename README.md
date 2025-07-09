@@ -13,12 +13,14 @@ A professional, multi-step lead capture form built with Laravel 12 and Vue.js 3.
 ## 🚀 Features
 
 ### **Multi-Step Form Flow**
+
 - **Step 1**: Basic Information (Name, Email, Company, Website URL)
 - **Step 2**: Website Type Selection (E-commerce, Blog, Business, Portfolio, Other)
 - **Step 3**: Platform Selection (Dynamic based on website type)
 - **Step 4**: Review & Submit (Editable summary with validation)
 
 ### **User Experience**
+
 - ✅ **Responsive Design** - Mobile-first with desktop optimization
 - ✅ **Real-time Validation** - Instant feedback with contextual error messages
 - ✅ **Platform Logos** - Visual platform selection with brand logos
@@ -27,6 +29,7 @@ A professional, multi-step lead capture form built with Laravel 12 and Vue.js 3.
 - ✅ **Edit Capabilities** - Return to previous steps from review
 
 ### **Technical Features**
+
 - ✅ **Service Repository Pattern** - Clean architecture with interfaces
 - ✅ **Data Transfer Objects** - Type-safe data handling
 - ✅ **Request Validation** - Robust backend validation with custom rules
@@ -38,12 +41,14 @@ A professional, multi-step lead capture form built with Laravel 12 and Vue.js 3.
 ## 🛠 Technology Stack
 
 ### **Backend**
+
 - **Laravel 12** - PHP framework with modern features
 - **PHP 8.2+** - Latest PHP version with strong typing
 - **MySQL** - Primary database
 - **PHPUnit** - Backend testing framework
 
 ### **Frontend**
+
 - **Vue.js 3** - Composition API with reactivity
 - **Pinia** - State management store
 - **Tailwind CSS** - Utility-first CSS framework
@@ -52,6 +57,7 @@ A professional, multi-step lead capture form built with Laravel 12 and Vue.js 3.
 - **Vite** - Lightning-fast build tool
 
 ### **Development Tools**
+
 - **Laravel Breeze** - Authentication scaffolding
 - **GitHub Actions** - CI/CD pipeline
 - **ESLint** - JavaScript linting
@@ -187,17 +193,17 @@ resources/js/
 
 ### **Endpoints**
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/v1/platforms` | Get all active platforms |
-| `GET` | `/api/v1/platforms?type={websiteType}` | Get platforms by website type |
-| `POST` | `/api/v1/leads` | Submit a new lead |
-| `GET` | `/api/v1/leads/{email}/check` | Check if email exists |
+| Method | Endpoint                               | Description                   |
+| ------ | -------------------------------------- | ----------------------------- |
+| `GET`  | `/api/v1/platforms`                    | Get all active platforms      |
+| `GET`  | `/api/v1/platforms?type={websiteType}` | Get platforms by website type |
+| `POST` | `/api/v1/leads`                        | Submit a new lead             |
+| `GET`  | `/api/v1/leads/{email}/check`          | Check if email exists         |
 
 ### **Platform Selection by Website Type**
 
 - **E-commerce**: Shopify, WooCommerce, BigCommerce, Magento, Custom Solution, Other
-- **Blog**: WordPress, Squarespace, Webflow, Custom Developed, Other  
+- **Blog**: WordPress, Squarespace, Webflow, Custom Developed, Other
 - **Business**: WordPress, Squarespace, Webflow, Custom Developed, Other
 - **Portfolio**: WordPress, Squarespace, Webflow, Custom Developed, Other
 - **Other**: WordPress, Squarespace, Webflow, Custom Developed, Other
@@ -205,13 +211,14 @@ resources/js/
 ### **Request/Response Examples**
 
 **Submit Lead:**
+
 ```bash
 POST /api/v1/leads
 Content-Type: application/json
 
 {
   "name": "John Doe",
-  "email": "john@example.com", 
+  "email": "john@example.com",
   "company": "Acme Corp",
   "website_url": "https://acme.com",
   "website_type": "ecommerce",
@@ -220,6 +227,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -298,6 +306,7 @@ public/images/platforms/
 ```
 
 **Logo Specifications:**
+
 - Format: PNG (preferred) or SVG
 - Size: 24x24px to 64x64px
 - Background: Transparent preferred
@@ -389,7 +398,7 @@ If you encounter any issues or need help:
 ## 🙏 Acknowledgments
 
 - **Laravel Team** - For the amazing framework
-- **Vue.js Team** - For the reactive frontend framework  
+- **Vue.js Team** - For the reactive frontend framework
 - **Tailwind CSS** - For the utility-first CSS framework
 - **Heroicons** - For the beautiful icon set
 

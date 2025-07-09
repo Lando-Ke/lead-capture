@@ -1,9 +1,7 @@
 <template>
   <div class="space-y-6">
     <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">
-        Basic Information
-      </h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Basic Information</h2>
       <p class="text-gray-600">
         Let's start with some basic information about you and your company.
       </p>
@@ -24,7 +22,7 @@
           :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.name }"
           @input="handleFieldUpdate('name', $event.target.value)"
           @blur="validateField('name')"
-        >
+        />
         <p v-if="errors.name" class="mt-1 text-sm text-red-600">
           {{ errors.name[0] }}
         </p>
@@ -44,7 +42,7 @@
           :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.email }"
           @input="handleFieldUpdate('email', $event.target.value)"
           @blur="handleEmailBlur"
-        >
+        />
         <p v-if="errors.email" class="mt-1 text-sm text-red-600">
           {{ errors.email[0] }}
         </p>
@@ -68,7 +66,7 @@
           :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.company }"
           @input="handleFieldUpdate('company', $event.target.value)"
           @blur="validateField('company')"
-        >
+        />
         <p v-if="errors.company" class="mt-1 text-sm text-red-600">
           {{ errors.company[0] }}
         </p>
@@ -88,7 +86,7 @@
           :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.website_url }"
           @input="handleFieldUpdate('website_url', $event.target.value)"
           @blur="validateField('website_url')"
-        >
+        />
         <p v-if="errors.website_url" class="mt-1 text-sm text-red-600">
           {{ errors.website_url[0] }}
         </p>
@@ -107,7 +105,7 @@
           'flex items-center px-6 py-3 rounded-lg text-sm font-medium transition-colors duration-200',
           canProceed
             ? 'bg-gray-900 text-white hover:bg-gray-800 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed',
         ]"
         @click="handleNext"
       >
@@ -127,8 +125,8 @@ import { useLeadStore } from '@/stores/leadStore'
 const props = defineProps({
   errors: {
     type: Object,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 })
 
 // Emits
@@ -145,13 +143,15 @@ const emailCheckTimeout = ref(null)
 const formData = computed(() => leadStore.formData)
 
 const canProceed = computed(() => {
-  return formData.value.name && 
-    formData.value.email && 
+  return (
+    formData.value.name &&
+    formData.value.email &&
     formData.value.company &&
     leadStore.validateEmail(formData.value.email) &&
     !props.errors.name &&
     !props.errors.email &&
     !props.errors.company
+  )
 })
 
 // Methods
@@ -160,36 +160,36 @@ const handleFieldUpdate = (field, value) => {
   validateField(field)
 }
 
-const validateField = (field) => {
+const validateField = field => {
   const value = formData.value[field]
-  
+
   switch (field) {
-  case 'name':
-    if (!value || value.trim().length < 2) {
-      leadStore.setError(field, 'Your full name must be at least 2 characters.')
-    }
-    break
-  case 'email':
-    if (!value) {
-      leadStore.setError(field, 'Your email address is required.')
-    } else if (!leadStore.validateEmail(value)) {
-      leadStore.setError(field, 'Please provide a valid email address.')
-    }
-    break
-  case 'company':
-    if (!value || value.trim().length < 2) {
-      leadStore.setError(field, 'Your company name must be at least 2 characters.')
-    }
-    break
-  case 'website_url':
-    if (value && !isValidUrl(value)) {
-      leadStore.setError(field, 'Please provide a valid website URL.')
-    }
-    break
+    case 'name':
+      if (!value || value.trim().length < 2) {
+        leadStore.setError(field, 'Your full name must be at least 2 characters.')
+      }
+      break
+    case 'email':
+      if (!value) {
+        leadStore.setError(field, 'Your email address is required.')
+      } else if (!leadStore.validateEmail(value)) {
+        leadStore.setError(field, 'Please provide a valid email address.')
+      }
+      break
+    case 'company':
+      if (!value || value.trim().length < 2) {
+        leadStore.setError(field, 'Your company name must be at least 2 characters.')
+      }
+      break
+    case 'website_url':
+      if (value && !isValidUrl(value)) {
+        leadStore.setError(field, 'Please provide a valid website URL.')
+      }
+      break
   }
 }
 
-const isValidUrl = (url) => {
+const isValidUrl = url => {
   try {
     new URL(url)
     return true
@@ -200,15 +200,15 @@ const isValidUrl = (url) => {
 
 const handleEmailBlur = async () => {
   const email = formData.value.email
-  
+
   // Clear previous timeout
   if (emailCheckTimeout.value) {
     clearTimeout(emailCheckTimeout.value)
   }
-  
+
   // Clear previous warning
   emailWarning.value = ''
-  
+
   if (email && leadStore.validateEmail(email)) {
     // Debounce email checking
     emailCheckTimeout.value = setTimeout(async () => {
@@ -222,7 +222,7 @@ const handleEmailBlur = async () => {
       }
     }, 500)
   }
-  
+
   validateField('email')
 }
 
@@ -234,9 +234,9 @@ const handleNext = () => {
   if (formData.value.website_url) {
     validateField('website_url')
   }
-  
+
   if (canProceed.value) {
     emit('next')
   }
 }
-</script> 
+</script>

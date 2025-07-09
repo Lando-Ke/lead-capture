@@ -8,6 +8,7 @@ use App\Contracts\PlatformServiceInterface;
 use App\Enums\WebsiteType;
 use App\Http\Resources\PlatformResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -23,87 +24,72 @@ final class PlatformController extends Controller
     ) {}
 
     /**
-     * Get all active platforms.
+     * Get all active platforms, optionally filtered by website type.
      * 
+     * @param Request $request The HTTP request
      * @return JsonResponse The response with platform data
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
-            $platforms = $this->platformService->getAllActivePlatforms();
+            $websiteType = $request->query('type');
+            
+            if ($websiteType) {
+                // Validate website type
+                try {
+                    $websiteTypeEnum = WebsiteType::from($websiteType);
+                } catch (\ValueError $e) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid website type provided',
+                        'error_code' => 'INVALID_WEBSITE_TYPE',
+                        'meta' => [
+                            'valid_types' => collect(WebsiteType::cases())->map(fn($type) => [
+                                'value' => $type->value,
+                                'label' => $type->label(),
+                            ])->toArray(),
+                        ],
+                    ], 422);
+                }
 
-            return response()->json([
-                'success' => true,
-                'data' => PlatformResource::collection($platforms),
-                'meta' => [
-                    'count' => $platforms->count(),
-                ],
-            ]);
+                $platforms = $this->platformService->getPlatformsForWebsiteType($websiteTypeEnum);
+                
+                return response()->json([
+                    'success' => true,
+                    'data' => PlatformResource::collection($platforms),
+                    'meta' => [
+                        'count' => $platforms->count(),
+                        'website_type' => [
+                            'value' => $websiteTypeEnum->value,
+                            'label' => $websiteTypeEnum->label(),
+                            'description' => $websiteTypeEnum->description(),
+                            'icon' => $websiteTypeEnum->icon(),
+                        ],
+                    ],
+                ]);
+            } else {
+                $platforms = $this->platformService->getAllActivePlatforms();
+                
+                return response()->json([
+                    'success' => true,
+                    'data' => PlatformResource::collection($platforms),
+                    'meta' => [
+                        'count' => $platforms->count(),
+                    ],
+                ]);
+            }
 
         } catch (\Exception $e) {
             Log::error('Platform retrieval error', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
+                'website_type' => $websiteType ?? null,
             ]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while retrieving platforms',
                 'error_code' => 'PLATFORM_RETRIEVAL_ERROR',
-            ], 500);
-        }
-    }
-
-    /**
-     * Get platforms filtered by website type.
-     * 
-     * @param string $websiteType The website type to filter by
-     * @return JsonResponse The response with filtered platform data
-     */
-    public function byWebsiteType(string $websiteType): JsonResponse
-    {
-        try {
-            $websiteTypeEnum = WebsiteType::from($websiteType);
-            $platforms = $this->platformService->getPlatformsForWebsiteType($websiteTypeEnum);
-
-            return response()->json([
-                'success' => true,
-                'data' => PlatformResource::collection($platforms),
-                'meta' => [
-                    'count' => $platforms->count(),
-                    'website_type' => [
-                        'value' => $websiteTypeEnum->value,
-                        'label' => $websiteTypeEnum->label(),
-                        'description' => $websiteTypeEnum->description(),
-                        'icon' => $websiteTypeEnum->icon(),
-                    ],
-                ],
-            ]);
-
-        } catch (\ValueError $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid website type provided',
-                'error_code' => 'INVALID_WEBSITE_TYPE',
-                'meta' => [
-                    'valid_types' => collect(WebsiteType::cases())->map(fn($type) => [
-                        'value' => $type->value,
-                        'label' => $type->label(),
-                    ])->toArray(),
-                ],
-            ], 422);
-
-        } catch (\Exception $e) {
-            Log::error('Platform filtering error', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'website_type' => $websiteType,
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while filtering platforms',
-                'error_code' => 'PLATFORM_FILTERING_ERROR',
             ], 500);
         }
     }

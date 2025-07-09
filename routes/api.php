@@ -45,10 +45,6 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('/', [PlatformController::class, 'index'])
             ->name('index');
         
-        Route::get('/website-type/{websiteType}', [PlatformController::class, 'byWebsiteType'])
-            ->name('by-website-type')
-            ->whereIn('websiteType', ['ecommerce', 'blog', 'business', 'portfolio', 'other']);
-        
         Route::get('/{slug}', [PlatformController::class, 'show'])
             ->name('show')
             ->whereAlphaNumeric('slug');

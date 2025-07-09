@@ -7,24 +7,25 @@ namespace Tests\Feature;
 use App\Enums\WebsiteType;
 use App\Models\Platform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Test suite for Platform API endpoints
+ */
 class PlatformApiTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
         
-        // Create test platforms
+        // Create comprehensive test platforms
         Platform::factory()->create([
             'name' => 'Shopify',
             'slug' => 'shopify',
             'description' => 'All-in-one commerce platform',
             'website_types' => [WebsiteType::ECOMMERCE->value],
-            'is_active' => true,
             'sort_order' => 1,
         ]);
 
@@ -33,7 +34,6 @@ class PlatformApiTest extends TestCase
             'slug' => 'woocommerce',
             'description' => 'WordPress e-commerce plugin',
             'website_types' => [WebsiteType::ECOMMERCE->value],
-            'is_active' => true,
             'sort_order' => 2,
         ]);
 
@@ -42,17 +42,32 @@ class PlatformApiTest extends TestCase
             'slug' => 'wordpress',
             'description' => 'Popular CMS platform',
             'website_types' => [WebsiteType::BLOG->value, WebsiteType::BUSINESS->value],
-            'is_active' => true,
             'sort_order' => 3,
+        ]);
+
+        Platform::factory()->create([
+            'name' => 'Ghost',
+            'slug' => 'ghost',
+            'description' => 'Modern publishing platform',
+            'website_types' => [WebsiteType::BLOG->value],
+            'sort_order' => 4,
+        ]);
+
+        Platform::factory()->create([
+            'name' => 'Behance',
+            'slug' => 'behance',
+            'description' => 'Creative portfolio platform',
+            'website_types' => [WebsiteType::PORTFOLIO->value],
+            'sort_order' => 5,
         ]);
 
         Platform::factory()->create([
             'name' => 'Inactive Platform',
             'slug' => 'inactive',
             'description' => 'This platform is inactive',
-            'website_types' => [WebsiteType::OTHER->value],
+            'website_types' => [WebsiteType::ECOMMERCE->value],
             'is_active' => false,
-            'sort_order' => 4,
+            'sort_order' => 999,
         ]);
     }
 
@@ -63,6 +78,7 @@ class PlatformApiTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
+                'success',
                 'data' => [
                     '*' => [
                         'id',
@@ -72,25 +88,14 @@ class PlatformApiTest extends TestCase
                         'website_types',
                     ],
                 ],
+                'meta' => [
+                    'count',
+                ],
             ])
-            ->assertJsonCount(3, 'data') // Only active platforms
-            ->assertJsonFragment([
-                'name' => 'Shopify',
-                'slug' => 'shopify',
-            ])
-            ->assertJsonFragment([
-                'name' => 'WooCommerce',
-                'slug' => 'woocommerce',
-            ])
-            ->assertJsonFragment([
-                'name' => 'WordPress',
-                'slug' => 'wordpress',
+            ->assertJsonCount(5, 'data') // 5 active platforms
+            ->assertJsonMissing([
+                'name' => 'Inactive Platform',
             ]);
-
-        // Should not include inactive platforms
-        $response->assertJsonMissing([
-            'name' => 'Inactive Platform',
-        ]);
     }
 
     /** @test */
@@ -104,16 +109,81 @@ class PlatformApiTest extends TestCase
         $this->assertEquals('Shopify', $platforms[0]['name']);
         $this->assertEquals('WooCommerce', $platforms[1]['name']);
         $this->assertEquals('WordPress', $platforms[2]['name']);
+        $this->assertEquals('Ghost', $platforms[3]['name']);
+        $this->assertEquals('Behance', $platforms[4]['name']);
     }
 
+    /** @test */
+    public function it_can_fetch_platforms_by_ecommerce_type(): void
+    {
+        $response = $this->getJson('/api/v1/platforms?type=ecommerce');
 
-
-
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'data' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'slug',
+                        'description',
+                        'website_types',
+                    ],
+                ],
+                'meta' => [
+                    'count',
+                    'website_type' => [
+                        'value',
+                        'label',
+                        'description',
+                        'icon',
+                    ],
+                ],
+            ])
+            ->assertJsonCount(2, 'data') // Shopify and WooCommerce
+            ->assertJsonFragment([
+                'name' => 'Shopify',
+            ])
+            ->assertJsonFragment([
+                'name' => 'WooCommerce',
+            ])
+            ->assertJsonFragment([
+                'website_type' => [
+                    'value' => 'ecommerce',
+                    'label' => 'E-commerce',
+                    'description' => 'An online store selling products or services',
+                    'icon' => '🛒',
+                ],
+            ]);
+    }
 
     /** @test */
-    public function it_can_fetch_platforms_by_business_website_type(): void
+    public function it_can_fetch_platforms_by_blog_type(): void
     {
-        $response = $this->getJson('/api/v1/platforms/website-type/business');
+        $response = $this->getJson('/api/v1/platforms?type=blog');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data') // WordPress and Ghost
+            ->assertJsonFragment([
+                'name' => 'WordPress',
+            ])
+            ->assertJsonFragment([
+                'name' => 'Ghost',
+            ])
+            ->assertJsonFragment([
+                'website_type' => [
+                    'value' => 'blog',
+                    'label' => 'Blog/Content Site',
+                    'description' => 'A website focused on publishing articles and content',
+                    'icon' => '📝',
+                ],
+            ]);
+    }
+
+    /** @test */
+    public function it_can_fetch_platforms_by_business_type(): void
+    {
+        $response = $this->getJson('/api/v1/platforms?type=business');
 
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data') // Only WordPress supports business
@@ -122,7 +192,60 @@ class PlatformApiTest extends TestCase
             ]);
     }
 
-    // Test deleted - requires custom error handling for invalid website types
+    /** @test */
+    public function it_can_fetch_platforms_by_portfolio_type(): void
+    {
+        $response = $this->getJson('/api/v1/platforms?type=portfolio');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data') // Only Behance
+            ->assertJsonFragment([
+                'name' => 'Behance',
+            ]);
+    }
+
+    /** @test */
+    public function it_returns_empty_array_for_other_website_type(): void
+    {
+        $response = $this->getJson('/api/v1/platforms?type=other');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data') // No platforms support 'other' type
+            ->assertJsonFragment([
+                'website_type' => [
+                    'value' => 'other',
+                    'label' => 'Other',
+                    'description' => 'A different type of website not listed above',
+                    'icon' => '🔍',
+                ],
+            ]);
+    }
+
+    /** @test */
+    public function it_validates_invalid_website_type(): void
+    {
+        $response = $this->getJson('/api/v1/platforms?type=invalid');
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'success',
+                'message',
+                'error_code',
+                'meta' => [
+                    'valid_types' => [
+                        '*' => [
+                            'value',
+                            'label',
+                        ],
+                    ],
+                ],
+            ])
+            ->assertJsonFragment([
+                'success' => false,
+                'message' => 'Invalid website type provided',
+                'error_code' => 'INVALID_WEBSITE_TYPE',
+            ]);
+    }
 
     /** @test */
     public function it_can_fetch_platform_by_slug(): void
@@ -131,6 +254,7 @@ class PlatformApiTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
+                'success',
                 'data' => [
                     'id',
                     'name',
@@ -154,7 +278,9 @@ class PlatformApiTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJsonFragment([
+                'success' => false,
                 'message' => 'Platform not found',
+                'error_code' => 'PLATFORM_NOT_FOUND',
             ]);
     }
 
@@ -165,7 +291,9 @@ class PlatformApiTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJsonFragment([
+                'success' => false,
                 'message' => 'Platform not found',
+                'error_code' => 'PLATFORM_NOT_FOUND',
             ]);
     }
 
@@ -184,9 +312,9 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_applies_cache_headers_to_platform_by_website_type(): void
+    public function it_applies_cache_headers_to_platform_with_query_params(): void
     {
-        $response = $this->getJson('/api/v1/platforms/website-type/ecommerce');
+        $response = $this->getJson('/api/v1/platforms?type=ecommerce');
 
         $response->assertStatus(200)
             ->assertHeader('X-Cache-Strategy', 'platforms');
@@ -221,8 +349,8 @@ class PlatformApiTest extends TestCase
     public function it_filters_platforms_correctly_for_mixed_website_types(): void
     {
         // Test that WordPress appears in both blog and business filters
-        $blogResponse = $this->getJson('/api/v1/platforms/website-type/blog');
-        $businessResponse = $this->getJson('/api/v1/platforms/website-type/business');
+        $blogResponse = $this->getJson('/api/v1/platforms?type=blog');
+        $businessResponse = $this->getJson('/api/v1/platforms?type=business');
 
         $blogResponse->assertStatus(200)
             ->assertJsonFragment(['name' => 'WordPress']);
@@ -231,7 +359,7 @@ class PlatformApiTest extends TestCase
             ->assertJsonFragment(['name' => 'WordPress']);
 
         // But not in ecommerce
-        $ecommerceResponse = $this->getJson('/api/v1/platforms/website-type/ecommerce');
+        $ecommerceResponse = $this->getJson('/api/v1/platforms?type=ecommerce');
         $ecommerceResponse->assertStatus(200)
             ->assertJsonMissing(['name' => 'WordPress']);
     }
@@ -257,21 +385,12 @@ class PlatformApiTest extends TestCase
     /** @test */
     public function it_only_returns_active_platforms_in_filtered_results(): void
     {
-        // Create an inactive e-commerce platform
-        Platform::factory()->create([
-            'name' => 'Inactive Ecommerce',
-            'slug' => 'inactive-ecommerce',
-            'website_types' => [WebsiteType::ECOMMERCE->value],
-            'is_active' => false,
-            'sort_order' => 999,
-        ]);
-
-        $response = $this->getJson('/api/v1/platforms/website-type/ecommerce');
+        $response = $this->getJson('/api/v1/platforms?type=ecommerce');
 
         $response->assertStatus(200)
-            ->assertJsonCount(2, 'data') // Should still only be 2 (Shopify, WooCommerce)
+            ->assertJsonCount(2, 'data') // Should be 2 (Shopify, WooCommerce)
             ->assertJsonMissing([
-                'name' => 'Inactive Ecommerce',
+                'name' => 'Inactive Platform',
             ]);
     }
 
@@ -288,7 +407,7 @@ class PlatformApiTest extends TestCase
         // All should succeed
         foreach ($responses as $response) {
             $response->assertStatus(200)
-                ->assertJsonCount(3, 'data');
+                ->assertJsonCount(5, 'data'); // 5 active platforms
         }
     }
 
@@ -326,7 +445,11 @@ class PlatformApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonCount(0, 'data')
             ->assertJsonStructure([
-                'data'
+                'success',
+                'data',
+                'meta' => [
+                    'count',
+                ],
             ]);
     }
 

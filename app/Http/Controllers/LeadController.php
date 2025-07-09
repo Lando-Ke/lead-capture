@@ -51,10 +51,29 @@ final class LeadController extends Controller
             // Load the platform relationship if it exists
             $lead->load('platform');
 
+            // Check if OneSignal service is enabled for notification status
+            $notificationEnabled = app(\App\Contracts\OneSignalServiceInterface::class)->isEnabled();
+
+            $notificationData = [
+                'enabled' => $notificationEnabled,
+                'status' => $notificationEnabled ? 'processing' : 'disabled',
+                'message' => $notificationEnabled 
+                    ? 'Team notification is being sent...' 
+                    : 'Team notifications are currently disabled',
+            ];
+
+            Log::info('Lead submitted with notification status', [
+                'lead_id' => $lead->id,
+                'lead_email' => $lead->email,
+                'notification_enabled' => $notificationEnabled,
+                'notification_status' => $notificationData,
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Lead submitted successfully',
                 'data' => new LeadResource($lead),
+                'notification' => $notificationData,
             ], 201);
         } catch (LeadAlreadyExistsException $e) {
             return response()->json([

@@ -7,6 +7,7 @@ export const useLeadStore = defineStore('lead', () => {
   const errors = ref({})
   const isLoading = ref(false)
   const isSubmitting = ref(false)
+  const notificationStatus = ref(null)
 
   // Form data
   const formData = ref({
@@ -20,6 +21,7 @@ export const useLeadStore = defineStore('lead', () => {
 
   // Computed
   const hasErrors = computed(() => Object.keys(errors.value).length > 0)
+  const hasNotificationStatus = computed(() => notificationStatus.value !== null)
 
   // Actions
   const clearErrors = () => {
@@ -40,6 +42,16 @@ export const useLeadStore = defineStore('lead', () => {
     formData.value[field] = value
     // Clear error when field is updated
     clearError(field)
+  }
+
+  const setNotificationStatus = (status) => {
+    console.log('📋 Setting notification status:', status)
+    notificationStatus.value = status
+  }
+
+  const clearNotificationStatus = () => {
+    console.log('📋 Clearing notification status')
+    notificationStatus.value = null
   }
 
   const validateEmail = email => {
@@ -85,6 +97,7 @@ export const useLeadStore = defineStore('lead', () => {
       platform_id: null,
     }
     clearErrors()
+    clearNotificationStatus()
   }
 
   const checkEmailExists = async email => {
@@ -100,16 +113,27 @@ export const useLeadStore = defineStore('lead', () => {
   const submitLead = async () => {
     isSubmitting.value = true
     clearErrors()
+    clearNotificationStatus()
 
     try {
       const response = await axios.post('/api/v1/leads', formData.value)
+      
+      console.log('📋 Lead submission response received:', response.data)
+
+      // Set notification status from API response
+      if (response.data.notification) {
+        console.log('📋 Notification status from API:', response.data.notification)
+        setNotificationStatus(response.data.notification)
+      }
 
       return {
         success: true,
         data: response.data.data,
         message: response.data.message,
+        notification: response.data.notification,
       }
     } catch (error) {
+      console.error('📋 Lead submission error:', error)
       if (error.response?.status === 422) {
         // Validation errors
         const responseErrors = error.response.data.errors || {}
@@ -136,15 +160,19 @@ export const useLeadStore = defineStore('lead', () => {
     errors,
     isLoading,
     isSubmitting,
+    notificationStatus,
 
     // Computed
     hasErrors,
+    hasNotificationStatus,
 
     // Actions
     clearErrors,
     setError,
     clearError,
     updateFormField,
+    setNotificationStatus,
+    clearNotificationStatus,
     validateEmail,
     validateStep,
     resetForm,

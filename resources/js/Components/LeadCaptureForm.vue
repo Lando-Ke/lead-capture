@@ -120,7 +120,12 @@
     </div>
 
     <!-- Success Modal -->
-    <SuccessModal v-if="showSuccess" :lead-data="submittedLead" @close="resetForm" />
+    <SuccessModal 
+      v-if="showSuccess" 
+      :lead-data="submittedLead" 
+      :notification-status="leadStore.notificationStatus"
+      @close="resetForm" 
+    />
 
     <!-- Error Alert -->
     <div
@@ -215,15 +220,20 @@ const handleWebsiteTypeChange = async websiteType => {
 const handleSubmit = async () => {
   if (!canSubmit.value) return
 
+  console.log('📋 Starting lead submission...')
+
   try {
     const result = await leadStore.submitLead()
+    console.log('📋 Lead submission result:', result)
 
     if (result.success) {
+      console.log('📋 Lead submitted successfully, showing success modal')
+      console.log('📋 Notification status:', result.notification)
       submittedLead.value = result.data
       showSuccess.value = true
     }
   } catch (error) {
-    console.error('Submission error:', error)
+    console.error('📋 Submission error:', error)
     // Error is already handled in the store
   }
 }

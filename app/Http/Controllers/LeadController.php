@@ -30,7 +30,7 @@ final class LeadController extends Controller
     /**
      * Store a newly created lead.
      *
-     * @param StoreLeadRequest $request The validated request
+     * @param StoreLeadRequest $request The validated reques
      *
      * @return JsonResponse The response with lead data or error
      */
@@ -57,8 +57,8 @@ final class LeadController extends Controller
             $notificationData = [
                 'enabled' => $notificationEnabled,
                 'status' => $notificationEnabled ? 'processing' : 'disabled',
-                'message' => $notificationEnabled 
-                    ? 'Team notification is being sent...' 
+                'message' => $notificationEnabled
+                    ? 'Team notification is being sent...'
                     : 'Team notifications are currently disabled',
             ];
 

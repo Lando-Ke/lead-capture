@@ -164,7 +164,7 @@ class LeadServiceTest extends TestCase
             company: null,
             websiteUrl: null,
             websiteType: WebsiteType::BUSINESS,
-            platform: null
+            platform: 1
         );
 
         $expectedLead = new Lead([
@@ -174,7 +174,7 @@ class LeadServiceTest extends TestCase
             'company' => null,
             'website_url' => null,
             'website_type' => 'business',
-            'platform_id' => null,
+            'platform_id' => 1,
             'created_at' => now(),
         ]);
         $expectedLead->id = 1;
@@ -196,7 +196,7 @@ class LeadServiceTest extends TestCase
                 return $data['lead_id'] === 1
                        && $data['email'] === 'john@example.com'
                        && $data['website_type'] === 'business'
-                       && $data['platform_id'] === null
+                       && $data['platform_id'] === 1
                        && isset($data['created_at']);
             }))
             ->once();
@@ -207,7 +207,7 @@ class LeadServiceTest extends TestCase
         $this->assertEquals('John Doe', $result->name);
         $this->assertEquals('john@example.com', $result->email);
         $this->assertEquals(WebsiteType::BUSINESS, $result->website_type);
-        $this->assertNull($result->platform_id);
+        $this->assertEquals(1, $result->platform_id);
     }
 
     #[Test]

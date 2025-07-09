@@ -40,7 +40,7 @@ class LeadDTOTest extends TestCase
             company: null,
             websiteUrl: null,
             websiteType: WebsiteType::BUSINESS,
-            platform: null
+            platform: 1
         );
 
         $this->assertEquals('John Doe', $dto->name);
@@ -48,7 +48,7 @@ class LeadDTOTest extends TestCase
         $this->assertNull($dto->company);
         $this->assertNull($dto->websiteUrl);
         $this->assertEquals(WebsiteType::BUSINESS, $dto->websiteType);
-        $this->assertNull($dto->platform);
+        $this->assertEquals(1, $dto->platform);
     }
 
     #[Test]
@@ -80,6 +80,7 @@ class LeadDTOTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'website_type' => 'business',
+            'platform_id' => 1,
         ];
 
         $dto = LeadDTO::fromArray($data);
@@ -89,7 +90,7 @@ class LeadDTOTest extends TestCase
         $this->assertNull($dto->company);
         $this->assertNull($dto->websiteUrl);
         $this->assertEquals(WebsiteType::BUSINESS, $dto->websiteType);
-        $this->assertNull($dto->platform);
+        $this->assertEquals(1, $dto->platform);
     }
 
     #[Test]
@@ -125,7 +126,7 @@ class LeadDTOTest extends TestCase
             company: null,
             websiteUrl: null,
             websiteType: WebsiteType::BUSINESS,
-            platform: null
+            platform: 1
         );
 
         $array = $dto->toArray();
@@ -136,7 +137,7 @@ class LeadDTOTest extends TestCase
             'company' => null,
             'website_url' => null,
             'website_type' => 'business',
-            'platform_id' => null,
+            'platform_id' => 1,
         ], $array);
     }
 
@@ -158,7 +159,7 @@ class LeadDTOTest extends TestCase
                 company: null,
                 websiteUrl: null,
                 websiteType: $typeEnum,
-                platform: $typeEnum === WebsiteType::ECOMMERCE ? 1 : null
+                platform: 1
             );
 
             $array = $dto->toArray();
@@ -213,11 +214,11 @@ class LeadDTOTest extends TestCase
             company: null,
             websiteUrl: null,
             websiteType: WebsiteType::BLOG,
-            platform: null
+            platform: 1
         );
 
         $this->assertEquals(WebsiteType::BLOG, $dto->websiteType);
-        $this->assertNull($dto->platform);
+        $this->assertNotNull($dto->platform);
     }
 
     #[Test]
@@ -252,12 +253,12 @@ class LeadDTOTest extends TestCase
             company: null,
             websiteUrl: null,
             websiteType: WebsiteType::BUSINESS,
-            platform: null
+            platform: 1
         );
 
         $this->assertNull($dto->company);
         $this->assertNull($dto->websiteUrl);
-        $this->assertNull($dto->platform);
+        $this->assertEquals(1, $dto->platform);
     }
 
     #[Test]

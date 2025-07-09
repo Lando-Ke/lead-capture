@@ -96,7 +96,7 @@ final class LeadDTO
      */
     public function requiresPlatform(): bool
     {
-        return $this->websiteType === WebsiteType::ECOMMERCE;
+        return true;
     }
 
     /**
@@ -148,8 +148,8 @@ final class LeadDTO
      */
     private function validatePlatformRequirement(): void
     {
-        if ($this->requiresPlatform() && $this->platform === null) {
-            throw new \InvalidArgumentException('Platform selection is required for e-commerce websites');
+        if ($this->platform === null) {
+            throw new \InvalidArgumentException('Platform selection is required');
         }
     }
 }

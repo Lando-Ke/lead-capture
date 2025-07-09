@@ -105,64 +105,99 @@ final class ApiDocumentationController extends Controller
             'platforms.index' => [
                 'method' => 'GET',
                 'path' => '/v1/platforms',
-                'description' => 'Get all active platforms',
-                'parameters' => [],
-                'responses' => [
-                    '200' => [
-                        'description' => 'List of active platforms',
-                        'example' => [
-                            'data' => [
-                                [
-                                    'id' => 1,
-                                    'name' => 'Shopify',
-                                    'slug' => 'shopify',
-                                    'description' => 'All-in-one commerce platform',
-                                    'website_types' => ['ecommerce'],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            'platforms.by-website-type' => [
-                'method' => 'GET',
-                'path' => '/v1/platforms/website-type/{websiteType}',
-                'description' => 'Get platforms filtered by website type',
+                'description' => 'Get all active platforms, optionally filtered by website type using query parameter',
                 'parameters' => [
-                    'websiteType' => [
+                    'type' => [
+                        'in' => 'query',
                         'type' => 'string',
+                        'required' => false,
                         'enum' => collect(WebsiteType::cases())->map(fn($type) => $type->value)->toArray(),
-                        'description' => 'Website type to filter by',
+                        'description' => 'Filter platforms by website type. If provided, returns only platforms that support this website type.',
                     ],
                 ],
                 'responses' => [
                     '200' => [
-                        'description' => 'Filtered platforms',
-                        'example' => [
-                            'data' => [
-                                [
-                                    'id' => 1,
-                                    'name' => 'Shopify',
-                                    'slug' => 'shopify',
-                                    'description' => 'All-in-one commerce platform',
-                                    'website_types' => ['ecommerce'],
+                        'description' => 'List of platforms (all or filtered)',
+                        'examples' => [
+                            'all_platforms' => [
+                                'description' => 'All platforms without filtering',
+                                'value' => [
+                                    'success' => true,
+                                    'data' => [
+                                        [
+                                            'id' => 1,
+                                            'name' => 'WordPress',
+                                            'slug' => 'wordpress',
+                                            'description' => 'Popular content management system',
+                                            'website_types' => ['blog', 'business'],
+                                        ],
+                                        [
+                                            'id' => 2,
+                                            'name' => 'Shopify',
+                                            'slug' => 'shopify',
+                                            'description' => 'All-in-one commerce platform',
+                                            'website_types' => ['ecommerce'],
+                                        ],
+                                    ],
+                                    'meta' => [
+                                        'count' => 2,
+                                    ],
                                 ],
                             ],
-                            'website_type' => [
-                                'value' => 'ecommerce',
-                                'label' => 'E-commerce',
+                            'filtered_platforms' => [
+                                'description' => 'Platforms filtered by website type',
+                                'value' => [
+                                    'success' => true,
+                                    'data' => [
+                                        [
+                                            'id' => 1,
+                                            'name' => 'WordPress',
+                                            'slug' => 'wordpress',
+                                            'description' => 'Popular content management system',
+                                            'website_types' => ['blog', 'business'],
+                                        ],
+                                    ],
+                                    'meta' => [
+                                        'count' => 1,
+                                        'website_type' => [
+                                            'value' => 'business',
+                                            'label' => 'Corporate/Business Site',
+                                            'description' => 'A professional website representing your business',
+                                            'icon' => '🏢',
+                                        ],
+                                    ],
+                                ],
                             ],
                         ],
                     ],
                     '422' => [
-                        'description' => 'Invalid website type',
+                        'description' => 'Invalid website type provided',
                         'example' => [
-                            'error' => 'Invalid website type provided',
-                            'valid_types' => ['ecommerce', 'blog', 'business', 'portfolio', 'other'],
+                            'success' => false,
+                            'message' => 'Invalid website type provided',
+                            'error_code' => 'INVALID_WEBSITE_TYPE',
+                            'meta' => [
+                                'valid_types' => [
+                                    ['value' => 'ecommerce', 'label' => 'E-commerce'],
+                                    ['value' => 'blog', 'label' => 'Blog/Content Site'],
+                                    ['value' => 'business', 'label' => 'Corporate/Business Site'],
+                                    ['value' => 'portfolio', 'label' => 'Portfolio'],
+                                    ['value' => 'other', 'label' => 'Other'],
+                                ],
+                            ],
+                        ],
+                    ],
+                    '500' => [
+                        'description' => 'Server error during platform retrieval',
+                        'example' => [
+                            'success' => false,
+                            'message' => 'An error occurred while retrieving platforms',
+                            'error_code' => 'PLATFORM_RETRIEVAL_ERROR',
                         ],
                     ],
                 ],
             ],
+
             'platforms.show' => [
                 'method' => 'GET',
                 'path' => '/v1/platforms/{slug}',
@@ -177,19 +212,30 @@ final class ApiDocumentationController extends Controller
                     '200' => [
                         'description' => 'Platform details',
                         'example' => [
+                            'success' => true,
                             'data' => [
                                 'id' => 1,
-                                'name' => 'Shopify',
-                                'slug' => 'shopify',
-                                'description' => 'All-in-one commerce platform',
-                                'website_types' => ['ecommerce'],
+                                'name' => 'WordPress',
+                                'slug' => 'wordpress',
+                                'description' => 'Popular content management system',
+                                'website_types' => ['blog', 'business'],
                             ],
                         ],
                     ],
                     '404' => [
                         'description' => 'Platform not found',
                         'example' => [
+                            'success' => false,
                             'message' => 'Platform not found',
+                            'error_code' => 'PLATFORM_NOT_FOUND',
+                        ],
+                    ],
+                    '500' => [
+                        'description' => 'Server error during platform retrieval',
+                        'example' => [
+                            'success' => false,
+                            'message' => 'An error occurred while retrieving the platform',
+                            'error_code' => 'PLATFORM_RETRIEVAL_ERROR',
                         ],
                     ],
                 ],
@@ -197,7 +243,7 @@ final class ApiDocumentationController extends Controller
             'leads.store' => [
                 'method' => 'POST',
                 'path' => '/v1/leads',
-                'description' => 'Submit a new lead',
+                'description' => 'Submit a new lead. Platform selection is required for all website types.',
                 'parameters' => [],
                 'request_body' => [
                     'required' => true,
@@ -205,7 +251,7 @@ final class ApiDocumentationController extends Controller
                         'application/json' => [
                             'schema' => [
                                 'type' => 'object',
-                                'required' => ['name', 'email', 'website_type'],
+                                'required' => ['name', 'email', 'company', 'website_type', 'platform_id'],
                                 'properties' => [
                                     'name' => [
                                         'type' => 'string',
@@ -221,8 +267,9 @@ final class ApiDocumentationController extends Controller
                                     ],
                                     'company' => [
                                         'type' => 'string',
+                                        'minLength' => 2,
                                         'maxLength' => 255,
-                                        'description' => 'Company name (optional)',
+                                        'description' => 'Company name (required)',
                                     ],
                                     'website_url' => [
                                         'type' => 'string',
@@ -237,7 +284,7 @@ final class ApiDocumentationController extends Controller
                                     ],
                                     'platform_id' => [
                                         'type' => 'integer',
-                                        'description' => 'Platform ID (required if website_type is ecommerce)',
+                                        'description' => 'Platform ID (required for all website types)',
                                     ],
                                 ],
                             ],
@@ -254,11 +301,19 @@ final class ApiDocumentationController extends Controller
                                 'id' => 1,
                                 'name' => 'John Doe',
                                 'email' => 'john@example.com',
+                                'company' => 'Acme Corp',
+                                'website_url' => 'https://example.com',
                                 'website_type' => [
-                                    'value' => 'ecommerce',
-                                    'label' => 'E-commerce',
-                                    'description' => 'An online store selling products',
-                                    'icon' => '🛒',
+                                    'value' => 'business',
+                                    'label' => 'Corporate/Business Site',
+                                    'description' => 'A professional website representing your business',
+                                    'icon' => '🏢',
+                                ],
+                                'platform' => [
+                                    'id' => 1,
+                                    'name' => 'WordPress',
+                                    'slug' => 'wordpress',
+                                    'description' => 'Popular content management system',
                                 ],
                                 'submitted_at' => now()->toISOString(),
                             ],
@@ -279,6 +334,8 @@ final class ApiDocumentationController extends Controller
                             'errors' => [
                                 'email' => ['The email field is required.'],
                                 'name' => ['The name field is required.'],
+                                'company' => ['The company field is required.'],
+                                'platform_id' => ['Please select a platform for your website.'],
                             ],
                         ],
                     ],
@@ -393,7 +450,7 @@ final class ApiDocumentationController extends Controller
         return [
             'lead_submission' => [
                 'title' => 'Submit a lead',
-                'description' => 'Example of submitting a lead with required fields',
+                'description' => 'Example of submitting a lead with all required fields including platform selection',
                 'request' => [
                     'method' => 'POST',
                     'url' => '/api/v1/leads',
@@ -406,7 +463,7 @@ final class ApiDocumentationController extends Controller
                         'email' => 'john@example.com',
                         'company' => 'Acme Corp',
                         'website_url' => 'https://example.com',
-                        'website_type' => 'ecommerce',
+                        'website_type' => 'business',
                         'platform_id' => 1,
                     ],
                 ],
@@ -419,9 +476,15 @@ final class ApiDocumentationController extends Controller
                             'id' => 1,
                             'name' => 'John Doe',
                             'email' => 'john@example.com',
+                            'company' => 'Acme Corp',
                             'website_type' => [
-                                'value' => 'ecommerce',
-                                'label' => 'E-commerce',
+                                'value' => 'business',
+                                'label' => 'Corporate/Business Site',
+                            ],
+                            'platform' => [
+                                'id' => 1,
+                                'name' => 'WordPress',
+                                'slug' => 'wordpress',
                             ],
                             'submitted_at' => now()->toISOString(),
                         ],
@@ -430,10 +493,10 @@ final class ApiDocumentationController extends Controller
             ],
             'platform_lookup' => [
                 'title' => 'Get platforms by website type',
-                'description' => 'Example of fetching platforms for a specific website type',
+                'description' => 'Example of fetching platforms for a business website using query parameter. All website types have available platforms.',
                 'request' => [
                     'method' => 'GET',
-                    'url' => '/api/v1/platforms/website-type/ecommerce',
+                    'url' => '/api/v1/platforms?type=business',
                     'headers' => [
                         'Accept' => 'application/json',
                     ],
@@ -441,18 +504,74 @@ final class ApiDocumentationController extends Controller
                 'response' => [
                     'status' => 200,
                     'body' => [
+                        'success' => true,
                         'data' => [
                             [
                                 'id' => 1,
-                                'name' => 'Shopify',
-                                'slug' => 'shopify',
-                                'description' => 'All-in-one commerce platform',
-                                'website_types' => ['ecommerce'],
+                                'name' => 'WordPress',
+                                'slug' => 'wordpress',
+                                'description' => 'Popular content management system',
+                                'website_types' => ['blog', 'business'],
+                            ],
+                            [
+                                'id' => 2,
+                                'name' => 'Squarespace',
+                                'slug' => 'squarespace',
+                                'description' => 'All-in-one website builder',
+                                'website_types' => ['business', 'portfolio'],
                             ],
                         ],
-                        'website_type' => [
-                            'value' => 'ecommerce',
-                            'label' => 'E-commerce',
+                        'meta' => [
+                            'count' => 2,
+                            'website_type' => [
+                                'value' => 'business',
+                                'label' => 'Corporate/Business Site',
+                                'description' => 'A professional website representing your business',
+                                'icon' => '🏢',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'ecommerce_lead_submission' => [
+                'title' => 'Submit an e-commerce lead',
+                'description' => 'Example of submitting a lead for an e-commerce website',
+                'request' => [
+                    'method' => 'POST',
+                    'url' => '/api/v1/leads',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    'body' => [
+                        'name' => 'Jane Smith',
+                        'email' => 'jane@shopexample.com',
+                        'company' => 'Online Shop Ltd',
+                        'website_url' => 'https://shopexample.com',
+                        'website_type' => 'ecommerce',
+                        'platform_id' => 3,
+                    ],
+                ],
+                'response' => [
+                    'status' => 201,
+                    'body' => [
+                        'success' => true,
+                        'message' => 'Lead submitted successfully',
+                        'data' => [
+                            'id' => 2,
+                            'name' => 'Jane Smith',
+                            'email' => 'jane@shopexample.com',
+                            'company' => 'Online Shop Ltd',
+                            'website_type' => [
+                                'value' => 'ecommerce',
+                                'label' => 'E-commerce',
+                            ],
+                            'platform' => [
+                                'id' => 3,
+                                'name' => 'Shopify',
+                                'slug' => 'shopify',
+                            ],
+                            'submitted_at' => now()->toISOString(),
                         ],
                     ],
                 ],
@@ -511,14 +630,14 @@ final class ApiDocumentationController extends Controller
         return [
             'LeadRequest' => [
                 'type' => 'object',
-                'required' => ['name', 'email', 'website_type'],
+                'required' => ['name', 'email', 'company', 'website_type', 'platform_id'],
                 'properties' => [
                     'name' => ['type' => 'string', 'minLength' => 2, 'maxLength' => 255],
                     'email' => ['type' => 'string', 'format' => 'email', 'maxLength' => 255],
-                    'company' => ['type' => 'string', 'maxLength' => 255],
+                    'company' => ['type' => 'string', 'minLength' => 2, 'maxLength' => 255],
                     'website_url' => ['type' => 'string', 'format' => 'url', 'maxLength' => 255],
                     'website_type' => ['type' => 'string', 'enum' => collect(WebsiteType::cases())->map(fn($type) => $type->value)->toArray()],
-                    'platform_id' => ['type' => 'integer'],
+                    'platform_id' => ['type' => 'integer', 'description' => 'Required for all website types'],
                 ],
             ],
             'LeadResponse' => [
@@ -536,10 +655,20 @@ final class ApiDocumentationController extends Controller
                     'name' => ['type' => 'string'],
                     'email' => ['type' => 'string'],
                     'company' => ['type' => 'string'],
-                    'website_url' => ['type' => 'string'],
-                    'website_type' => ['type' => 'object'],
-                    'platform' => ['type' => 'object'],
+                    'website_url' => ['type' => 'string', 'nullable' => true],
+                    'website_type' => ['type' => 'object', 'description' => 'Website type with label, description, and icon'],
+                    'platform' => ['type' => 'object', 'description' => 'Platform information with id, name, slug, and description'],
                     'submitted_at' => ['type' => 'string', 'format' => 'date-time'],
+                ],
+            ],
+            'Platform' => [
+                'type' => 'object',
+                'properties' => [
+                    'id' => ['type' => 'integer'],
+                    'name' => ['type' => 'string'],
+                    'slug' => ['type' => 'string'],
+                    'description' => ['type' => 'string'],
+                    'website_types' => ['type' => 'array', 'items' => ['type' => 'string']],
                 ],
             ],
         ];

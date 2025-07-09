@@ -5,13 +5,22 @@
       <p v-if="websiteType === 'ecommerce'" class="text-gray-600">
         Select the e-commerce platform you're using or planning to use.
       </p>
+      <p v-else-if="websiteType === 'blog'" class="text-gray-600">
+        Select the blogging platform you're using or planning to use.
+      </p>
+      <p v-else-if="websiteType === 'business'" class="text-gray-600">
+        Select the platform you're using or planning to use for your business website.
+      </p>
+      <p v-else-if="websiteType === 'portfolio'" class="text-gray-600">
+        Select the platform you're using or planning to use for your portfolio.
+      </p>
       <p v-else class="text-gray-600">
-        Great! Let's continue with your {{ getWebsiteTypeLabel(websiteType) }} project.
+        Select the platform you're using or planning to use for your {{ getWebsiteTypeLabel(websiteType) }} website.
       </p>
     </div>
 
-    <!-- E-commerce Platform Selection -->
-    <div v-if="websiteType === 'ecommerce'">
+    <!-- Platform Selection for All Website Types -->
+    <div v-if="websiteType">
       <label class="block text-sm font-medium text-gray-700 mb-4">
         Platform <span class="text-red-500">*</span>
       </label>
@@ -32,16 +41,16 @@
           <label 
             class="flex items-start p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors duration-200"
             :class="{ 
-              'border-gray-900 bg-gray-50 ring-2 ring-gray-900': formData.platform === platform.slug,
-              'border-gray-300': formData.platform !== platform.slug 
+              'border-gray-900 bg-gray-50 ring-2 ring-gray-900': formData.platform_id === platform.id,
+              'border-gray-300': formData.platform_id !== platform.id 
             }"
           >
             <input
-              v-model="formData.platform"
-              :value="platform.slug"
+              v-model="formData.platform_id"
+              :value="platform.id"
               type="radio"
               class="mt-1 h-4 w-4 text-gray-900 border-gray-300 focus:ring-gray-900 focus:ring-2"
-              @change="handlePlatformChange(platform.slug)"
+              @change="handlePlatformChange(platform.id)"
             >
             <div class="ml-3 flex-1">
               <div class="flex items-center">
@@ -52,7 +61,7 @@
                   class="w-6 h-6 mr-2"
                   @error="hideImage"
                 >
-                <span v-else class="text-lg mr-2">🛍️</span>
+                <span v-else class="text-lg mr-2">{{ getPlatformIcon(websiteType) }}</span>
                 <span class="font-medium text-gray-900">{{ platform.name }}</span>
               </div>
               <p class="text-sm text-gray-600 mt-1">{{ platform.description }}</p>
@@ -77,17 +86,17 @@
         </button>
       </div>
       
-      <p v-if="errors.platform" class="mt-2 text-sm text-red-600">{{ errors.platform[0] }}</p>
+      <p v-if="errors.platform_id" class="mt-2 text-sm text-red-600">{{ errors.platform_id[0] }}</p>
     </div>
 
-    <!-- Non-E-commerce Message -->
+    <!-- No Website Type Selected -->
     <div v-else class="text-center py-8">
       <div class="text-gray-400 mb-4">
-        <CheckCircleIcon class="w-16 h-16 mx-auto" />
+        <ExclamationTriangleIcon class="w-16 h-16 mx-auto" />
       </div>
-      <h3 class="text-lg font-medium text-gray-900 mb-2">Platform Selection Not Required</h3>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Website Type Required</h3>
       <p class="text-gray-600">
-        Platform selection is only required for e-commerce websites. You're all set to continue!
+        Please go back and select a website type to see available platforms.
       </p>
     </div>
 
@@ -157,10 +166,8 @@ const platformStore = usePlatformStore()
 const formData = computed(() => leadStore.formData)
 
 const canProceed = computed(() => {
-  if (props.websiteType === 'ecommerce') {
-    return formData.value.platform && !props.errors.platform
-  }
-  return true // Non-ecommerce sites don't need platform selection
+  // Platform selection is required for all website types
+  return props.websiteType && formData.value.platform_id && !props.errors.platform_id
 })
 
 // Methods
@@ -168,8 +175,19 @@ const getWebsiteTypeLabel = (websiteType) => {
   return platformStore.getWebsiteTypeLabel(websiteType)
 }
 
-const handlePlatformChange = (platformSlug) => {
-  leadStore.updateFormField('platform', platformSlug)
+const getPlatformIcon = (websiteType) => {
+  const icons = {
+    'ecommerce': '🛍️',
+    'blog': '📝',
+    'business': '🏢',
+    'portfolio': '🎨',
+    'other': '🔍'
+  }
+  return icons[websiteType] || '🔍'
+}
+
+const handlePlatformChange = (platformId) => {
+  leadStore.updateFormField('platform_id', platformId)
 }
 
 const hideImage = (event) => {
@@ -178,14 +196,14 @@ const hideImage = (event) => {
 }
 
 const retryLoadPlatforms = async () => {
-  if (props.websiteType === 'ecommerce') {
+  if (props.websiteType) {
     await platformStore.fetchPlatformsByWebsiteType(props.websiteType)
   }
 }
 
 const handleNext = () => {
-  if (props.websiteType === 'ecommerce' && !formData.value.platform) {
-    leadStore.setError('platform', 'Please select a platform for your e-commerce site.')
+  if (!formData.value.platform_id) {
+    leadStore.setError('platform_id', `Please select a platform for your ${getWebsiteTypeLabel(props.websiteType)} website.`)
     return
   }
   
@@ -193,4 +211,4 @@ const handleNext = () => {
     emit('next')
   }
 }
-</script> 
+</script>

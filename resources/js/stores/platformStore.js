@@ -5,7 +5,7 @@ import axios from 'axios'
 export const usePlatformStore = defineStore('platform', () => {
   // State
   const platforms = ref([])
-  const ecommercePlatforms = ref([])
+  const availablePlatforms = ref([])
   const isLoading = ref(false)
   const errors = ref([])
   
@@ -51,50 +51,53 @@ export const usePlatformStore = defineStore('platform', () => {
     errors.value = []
   }
   
+  const clearAvailablePlatforms = () => {
+    availablePlatforms.value = []
+  }
+  
   const fetchAllPlatforms = async () => {
     isLoading.value = true
     clearErrors()
     
     try {
       const response = await axios.get('/api/v1/platforms')
-      platforms.value = response.data.data
+      platforms.value = response.data.data || []
+      return platforms.value
     } catch (error) {
       errors.value = ['Failed to load platforms']
       console.error('Error fetching platforms:', error)
+      return []
     } finally {
       isLoading.value = false
     }
   }
   
-  const fetchEcommercePlatforms = async () => {
-    isLoading.value = true
-    clearErrors()
+  const fetchPlatformsByWebsiteType = async (websiteType) => {
+    if (!websiteType) {
+      availablePlatforms.value = []
+      return []
+    }
     
-    try {
-      const response = await axios.get('/api/v1/platforms?type=ecommerce')
-      ecommercePlatforms.value = response.data.data
-    } catch (error) {
-      errors.value = ['Failed to load e-commerce platforms']
-      console.error('Error fetching e-commerce platforms:', error)
-    } finally {
-      isLoading.value = false
-    }
-  }
-  
-  const fetchPlatformsByType = async (websiteType) => {
     isLoading.value = true
     clearErrors()
     
     try {
       const response = await axios.get(`/api/v1/platforms?type=${websiteType}`)
-      return response.data.data
+      availablePlatforms.value = response.data.data || []
+      return availablePlatforms.value
     } catch (error) {
       errors.value = [`Failed to load platforms for ${websiteType}`]
       console.error('Error fetching platforms by type:', error)
+      availablePlatforms.value = []
       return []
     } finally {
       isLoading.value = false
     }
+  }
+  
+  // Initialize platforms data
+  const initializePlatforms = async () => {
+    await fetchAllPlatforms()
   }
   
   // Utility methods for website types
@@ -117,36 +120,46 @@ export const usePlatformStore = defineStore('platform', () => {
   const getPlatformLabel = (platformSlug) => {
     if (!platformSlug) return 'Not selected'
     
-    // Check in e-commerce platforms first
-    const ecommercePlatform = ecommercePlatforms.value.find(p => p.slug === platformSlug)
-    if (ecommercePlatform) return ecommercePlatform.name
+    // Check in available platforms first
+    const availablePlatform = availablePlatforms.value.find(p => p.slug === platformSlug)
+    if (availablePlatform) return availablePlatform.name
     
     // Check in all platforms
     const platform = platforms.value.find(p => p.slug === platformSlug)
     return platform ? platform.name : platformSlug
   }
   
+  const getPlatformById = (platformId) => {
+    if (!platformId) return null
+    
+    // Check in available platforms first
+    const availablePlatform = availablePlatforms.value.find(p => p.id === platformId)
+    if (availablePlatform) return availablePlatform
+    
+    // Check in all platforms
+    return platforms.value.find(p => p.id === platformId) || null
+  }
+  
+  const getPlatformLabelById = (platformId) => {
+    if (!platformId) return 'Not selected'
+    
+    const platform = getPlatformById(platformId)
+    return platform ? platform.name : 'Not selected'
+  }
+  
   const getPlatformBySlug = (slug) => {
-    // Check in e-commerce platforms first
-    const ecommercePlatform = ecommercePlatforms.value.find(p => p.slug === slug)
-    if (ecommercePlatform) return ecommercePlatform
+    // Check in available platforms first
+    const availablePlatform = availablePlatforms.value.find(p => p.slug === slug)
+    if (availablePlatform) return availablePlatform
     
     // Check in all platforms
     return platforms.value.find(p => p.slug === slug) || null
   }
   
-  // Initialize data on store creation
-  const initialize = async () => {
-    await Promise.all([
-      fetchAllPlatforms(),
-      fetchEcommercePlatforms()
-    ])
-  }
-  
   return {
     // State
     platforms,
-    ecommercePlatforms,
+    availablePlatforms,
     websiteTypes,
     isLoading,
     errors,
@@ -156,16 +169,18 @@ export const usePlatformStore = defineStore('platform', () => {
     
     // Actions
     clearErrors,
+    clearAvailablePlatforms,
     fetchAllPlatforms,
-    fetchEcommercePlatforms,
-    fetchPlatformsByType,
-    initialize,
+    fetchPlatformsByWebsiteType,
+    initializePlatforms,
     
     // Utility methods
     getWebsiteTypeLabel,
     getWebsiteTypeIcon,
     getWebsiteTypeDescription,
     getPlatformLabel,
+    getPlatformById,
+    getPlatformLabelById,
     getPlatformBySlug
   }
 }) 

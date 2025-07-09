@@ -48,7 +48,7 @@ final class StoreLeadRequest extends FormRequest
                 'unique:leads,email',
             ],
             'company' => [
-                'nullable',
+                'required',
                 'string',
                 'max:255',
                 'min:2',
@@ -64,8 +64,7 @@ final class StoreLeadRequest extends FormRequest
                 Rule::enum(WebsiteType::class),
             ],
             'platform_id' => [
-                'nullable',
-                'required_if:website_type,ecommerce',
+                'required',
                 'integer',
                 'exists:platforms,id',
                 new ActivePlatform(),
@@ -89,12 +88,14 @@ final class StoreLeadRequest extends FormRequest
             'email.required' => 'Your email address is required.',
             'email.email' => 'Please provide a valid email address.',
             'email.unique' => 'This email address has already been submitted.',
+            'company.required' => 'Your company name is required.',
             'company.min' => 'Company name must be at least 2 characters long.',
             'website_url.url' => 'Please provide a valid website URL.',
             'website_url.active_url' => 'The website URL must be accessible.',
             'website_type.required' => 'Please select a website type.',
             'website_type.enum' => 'Please select a valid website type.',
             'platform_id.required_if' => 'Please select a platform for your e-commerce site.',
+            'platform_id.required' => 'Please select a platform for your website.',
             'platform_id.exists' => 'The selected platform is not valid.',
         ];
     }
@@ -122,10 +123,26 @@ final class StoreLeadRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'name' => trim($this->input('name', '')),
-            'email' => strtolower(trim($this->input('email', ''))),
-            'company' => trim($this->input('company', '')),
-            'website_url' => trim($this->input('website_url', '')),
+            'name' => $this->trimInput('name'),
+            'email' => $this->input('email') ? strtolower(trim($this->input('email'))) : null,
+            'company' => $this->trimInput('company'),
+            'website_url' => $this->trimInput('website_url'),
         ]);
+    }
+
+    /**
+     * Safely trim input value, handling null and empty strings.
+     */
+    private function trimInput(string $key): ?string
+    {
+        $value = $this->input($key);
+        
+        if (!$value || !is_string($value)) {
+            return null;
+        }
+        
+        $trimmed = trim($value);
+        
+        return $trimmed === '' ? null : $trimmed;
     }
 } 

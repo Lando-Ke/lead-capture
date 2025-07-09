@@ -49,7 +49,7 @@
       <!-- Company Name -->
       <div>
         <label for="company" class="block text-sm font-medium text-gray-700 mb-1">
-          Company Name <span class="text-gray-400">(optional)</span>
+          Company Name <span class="text-red-500">*</span>
         </label>
         <input
           id="company"
@@ -59,6 +59,7 @@
           class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200"
           :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.company }"
           @input="handleFieldUpdate('company', $event.target.value)"
+          @blur="validateField('company')"
         >
         <p v-if="errors.company" class="mt-1 text-sm text-red-600">{{ errors.company[0] }}</p>
       </div>
@@ -132,9 +133,11 @@ const formData = computed(() => leadStore.formData)
 const canProceed = computed(() => {
   return formData.value.name && 
          formData.value.email && 
+         formData.value.company &&
          leadStore.validateEmail(formData.value.email) &&
          !props.errors.name &&
-         !props.errors.email
+         !props.errors.email &&
+         !props.errors.company
 })
 
 // Methods
@@ -157,6 +160,11 @@ const validateField = (field) => {
         leadStore.setError(field, 'Your email address is required.')
       } else if (!leadStore.validateEmail(value)) {
         leadStore.setError(field, 'Please provide a valid email address.')
+      }
+      break
+    case 'company':
+      if (!value || value.trim().length < 2) {
+        leadStore.setError(field, 'Your company name must be at least 2 characters.')
       }
       break
     case 'website_url':
@@ -208,6 +216,7 @@ const handleNext = () => {
   // Validate all fields before proceeding
   validateField('name')
   validateField('email')
+  validateField('company')
   if (formData.value.website_url) {
     validateField('website_url')
   }

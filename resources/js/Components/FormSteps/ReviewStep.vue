@@ -65,7 +65,7 @@
       </div>
 
       <!-- Platform -->
-      <div v-if="formData.website_type === 'ecommerce'" class="bg-gray-50 rounded-lg p-6">
+      <div v-if="formData.website_type && formData.platform_id" class="bg-gray-50 rounded-lg p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-medium text-gray-900">Platform</h3>
           <button
@@ -80,7 +80,7 @@
         
         <div class="text-sm">
           <span class="text-gray-500">Selected Platform</span>
-          <p class="font-medium mt-1">{{ getPlatformLabel(formData.platform) }}</p>
+          <p class="font-medium mt-1">{{ getPlatformLabel(formData.platform_id) }}</p>
         </div>
       </div>
     </div>
@@ -143,8 +143,9 @@
           <ul class="mt-2 text-red-700 list-disc list-inside space-y-1">
             <li v-if="!formData.name">Full name is required</li>
             <li v-if="!formData.email">Email address is required</li>
+            <li v-if="!formData.company">Company name is required</li>
             <li v-if="!formData.website_type">Website type selection is required</li>
-            <li v-if="formData.website_type === 'ecommerce' && !formData.platform">Platform selection is required for e-commerce sites</li>
+            <li v-if="formData.website_type && !formData.platform_id">Platform selection is required</li>
           </ul>
         </div>
       </div>
@@ -184,8 +185,8 @@ const emit = defineEmits(['edit', 'submit', 'previous'])
 // Computed
 const canSubmit = computed(() => {
   const data = props.formData
-  const basicRequirements = data.name && data.email && data.website_type
-  const platformRequirement = data.website_type !== 'ecommerce' || data.platform
+  const basicRequirements = data.name && data.email && data.company && data.website_type
+  const platformRequirement = data.platform_id
   
   return basicRequirements && platformRequirement
 })
@@ -203,7 +204,7 @@ const getWebsiteTypeIcon = (websiteType) => {
   return props.platformStore.getWebsiteTypeIcon(websiteType)
 }
 
-const getPlatformLabel = (platformSlug) => {
-  return props.platformStore.getPlatformLabel(platformSlug)
+const getPlatformLabel = (platformId) => {
+  return props.platformStore.getPlatformLabelById(platformId)
 }
 </script> 

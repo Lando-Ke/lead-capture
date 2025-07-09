@@ -51,9 +51,9 @@
                 {{ getWebsiteTypeLabel(leadData.website_type) }}
               </span>
             </div>
-            <div v-if="leadData.platform && leadData.website_type === 'ecommerce'" class="flex justify-between">
+            <div v-if="leadData.platform" class="flex justify-between">
               <span class="font-medium">Platform:</span> 
-              <span>{{ leadData.platform }}</span>
+              <span>{{ getPlatformLabel(leadData.platform) }}</span>
             </div>
             <div v-if="leadData.website_url" class="flex justify-between">
               <span class="font-medium">Website:</span> 
@@ -131,6 +131,11 @@ const emit = defineEmits(['close'])
 
 // Methods
 const getWebsiteTypeLabel = (websiteType) => {
+  // Handle both object (from API response) and string formats
+  if (typeof websiteType === 'object' && websiteType?.label) {
+    return websiteType.label
+  }
+  
   const types = {
     'ecommerce': 'E-commerce',
     'blog': 'Blog/Content Site',
@@ -142,6 +147,11 @@ const getWebsiteTypeLabel = (websiteType) => {
 }
 
 const getWebsiteTypeIcon = (websiteType) => {
+  // Handle both object (from API response) and string formats
+  if (typeof websiteType === 'object' && websiteType?.icon) {
+    return websiteType.icon
+  }
+  
   const icons = {
     'ecommerce': '🛒',
     'blog': '📝',
@@ -150,6 +160,22 @@ const getWebsiteTypeIcon = (websiteType) => {
     'other': '🔍'
   }
   return icons[websiteType] || '🔍'
+}
+
+const getPlatformLabel = (platform) => {
+  // Handle both object (from API response) and string formats
+  if (typeof platform === 'object' && platform?.name) {
+    return platform.name
+  }
+  
+  const platforms = {
+    'wordpress': 'WordPress',
+    'shopify': 'Shopify',
+    'woocommerce': 'WooCommerce',
+    'magento': 'Magento',
+    'custom': 'Custom'
+  }
+  return platforms[platform] || 'Not selected'
 }
 
 const downloadSubmission = () => {
@@ -163,7 +189,7 @@ ${props.leadData.company ? `Company: ${props.leadData.company}` : ''}
 Email: ${props.leadData.email}
 ${props.leadData.website_url ? `Website: ${props.leadData.website_url}` : ''}
 Website Type: ${getWebsiteTypeLabel(props.leadData.website_type)}
-${props.leadData.platform && props.leadData.website_type === 'ecommerce' ? `Platform: ${props.leadData.platform}` : ''}
+${props.leadData.platform ? `Platform: ${getPlatformLabel(props.leadData.platform)}` : ''}
 
 Submitted: ${new Date().toLocaleString()}
 

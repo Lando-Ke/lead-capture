@@ -15,7 +15,7 @@ export const useLeadStore = defineStore('lead', () => {
     company: '',
     website_url: '',
     website_type: '',
-    platform: ''
+    platform_id: null
   })
   
   // Computed
@@ -52,14 +52,15 @@ export const useLeadStore = defineStore('lead', () => {
       case 0: // Basic Information
         return formData.value.name && 
                formData.value.email && 
+               formData.value.company &&
                validateEmail(formData.value.email)
       case 1: // Website Details
         return formData.value.website_type
       case 2: // Platform Selection
-        return formData.value.website_type !== 'ecommerce' || formData.value.platform
+        return formData.value.website_type && formData.value.platform_id
       case 3: // Review & Submit
-        const basicValid = formData.value.name && formData.value.email && formData.value.website_type
-        const platformValid = formData.value.website_type !== 'ecommerce' || formData.value.platform
+        const basicValid = formData.value.name && formData.value.email && formData.value.company && formData.value.website_type
+        const platformValid = formData.value.platform_id
         return basicValid && platformValid
       default:
         return false
@@ -73,7 +74,7 @@ export const useLeadStore = defineStore('lead', () => {
       company: '',
       website_url: '',
       website_type: '',
-      platform: ''
+      platform_id: null
     }
     clearErrors()
   }

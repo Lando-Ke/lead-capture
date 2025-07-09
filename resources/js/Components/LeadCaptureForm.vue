@@ -177,12 +177,13 @@ const goToStep = (step) => {
 const handleWebsiteTypeChange = async (websiteType) => {
   leadStore.updateFormField('website_type', websiteType)
   
-  if (websiteType === 'ecommerce') {
+  // Fetch platforms for the selected website type
+  if (websiteType) {
     await platformStore.fetchPlatformsByWebsiteType(websiteType)
+    // Clear previous platform selection when website type changes
+    leadStore.updateFormField('platform_id', null)
   } else {
-    // Clear platform selection for non-ecommerce sites
-    leadStore.updateFormField('platform', '')
-    platformStore.clearFilteredPlatforms()
+    platformStore.clearAvailablePlatforms()
   }
 }
 

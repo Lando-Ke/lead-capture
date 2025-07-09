@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 
 /**
  * Request for validating lead submission data.
- * 
+ *
  * Validates all lead form fields with proper business rules
  * and provides user-friendly error messages.
  */
@@ -28,7 +28,7 @@ final class StoreLeadRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     * 
+     *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
@@ -75,7 +75,7 @@ final class StoreLeadRequest extends FormRequest
 
     /**
      * Get custom error messages for validator errors.
-     * 
+     *
      * @return array<string, string>
      */
     public function messages(): array
@@ -102,7 +102,7 @@ final class StoreLeadRequest extends FormRequest
 
     /**
      * Get custom attribute names for validator errors.
-     * 
+     *
      * @return array<string, string>
      */
     public function attributes(): array
@@ -136,13 +136,13 @@ final class StoreLeadRequest extends FormRequest
     private function trimInput(string $key): ?string
     {
         $value = $this->input($key);
-        
+
         if (!$value || !is_string($value)) {
             return null;
         }
-        
+
         $trimmed = trim($value);
-        
+
         return $trimmed === '' ? null : $trimmed;
     }
-} 
+}

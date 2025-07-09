@@ -10,30 +10,30 @@ use App\Models\Platform;
 use App\Services\PlatformService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
-use Mockery;
 use Tests\TestCase;
 
 class PlatformServiceTest extends TestCase
 {
     private PlatformService $platformService;
+
     private $platformRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $this->platformRepository = Mockery::mock(PlatformRepositoryInterface::class);
+
+        $this->platformRepository = \Mockery::mock(PlatformRepositoryInterface::class);
         $this->platformService = new PlatformService($this->platformRepository);
     }
 
     protected function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
         parent::tearDown();
     }
 
     /** @test */
-    public function it_can_get_platforms_for_website_type(): void
+    public function itCanGetPlatformsForWebsiteType(): void
     {
         $platforms = new Collection([
             new Platform(['id' => 1, 'name' => 'Shopify', 'slug' => 'shopify']),
@@ -47,7 +47,7 @@ class PlatformServiceTest extends TestCase
             ->andReturn($platforms);
 
         Cache::shouldReceive('remember')
-            ->with('platforms:website_type:ecommerce', Mockery::any(), Mockery::any())
+            ->with('platforms:website_type:ecommerce', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
                 return $callback();
@@ -61,7 +61,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_caches_platforms_for_website_type(): void
+    public function itCachesPlatformsForWebsiteType(): void
     {
         $platforms = new Collection([
             new Platform(['id' => 1, 'name' => 'Shopify', 'slug' => 'shopify']),
@@ -74,11 +74,12 @@ class PlatformServiceTest extends TestCase
             ->andReturn($platforms);
 
         Cache::shouldReceive('remember')
-            ->with('platforms:website_type:ecommerce', Mockery::any(), Mockery::any())
+            ->with('platforms:website_type:ecommerce', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
                 // Verify cache TTL is 24 hours in seconds
                 $this->assertEquals(24 * 60 * 60, $ttl);
+
                 return $callback();
             });
 
@@ -88,7 +89,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_all_active_platforms(): void
+    public function itCanGetAllActivePlatforms(): void
     {
         $platforms = new Collection([
             new Platform(['id' => 1, 'name' => 'Shopify', 'slug' => 'shopify']),
@@ -101,7 +102,7 @@ class PlatformServiceTest extends TestCase
             ->andReturn($platforms);
 
         Cache::shouldReceive('remember')
-            ->with('platforms:all_active', Mockery::any(), Mockery::any())
+            ->with('platforms:all_active', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
                 return $callback();
@@ -114,7 +115,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_caches_all_active_platforms(): void
+    public function itCachesAllActivePlatforms(): void
     {
         $platforms = new Collection([
             new Platform(['id' => 1, 'name' => 'Shopify', 'slug' => 'shopify']),
@@ -126,11 +127,12 @@ class PlatformServiceTest extends TestCase
             ->andReturn($platforms);
 
         Cache::shouldReceive('remember')
-            ->with('platforms:all_active', Mockery::any(), Mockery::any())
+            ->with('platforms:all_active', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
                 // Verify cache TTL is 24 hours in seconds
                 $this->assertEquals(24 * 60 * 60, $ttl);
+
                 return $callback();
             });
 
@@ -140,7 +142,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_find_platform_by_slug(): void
+    public function itCanFindPlatformBySlug(): void
     {
         $platform = new Platform(['id' => 1, 'name' => 'Shopify', 'slug' => 'shopify']);
 
@@ -158,7 +160,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_null_when_platform_not_found_by_slug(): void
+    public function itReturnsNullWhenPlatformNotFoundBySlug(): void
     {
         $this->platformRepository
             ->shouldReceive('findBySlug')
@@ -172,7 +174,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_clear_platform_cache(): void
+    public function itCanClearPlatformCache(): void
     {
         Cache::shouldReceive('forget')
             ->with('platforms:website_type:ecommerce')
@@ -211,7 +213,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_different_website_types(): void
+    public function itHandlesDifferentWebsiteTypes(): void
     {
         $websiteTypes = [
             WebsiteType::ECOMMERCE,
@@ -233,7 +235,7 @@ class PlatformServiceTest extends TestCase
                 ->andReturn($platforms);
 
             Cache::shouldReceive('remember')
-                ->with("platforms:website_type:{$websiteType->value}", Mockery::any(), Mockery::any())
+                ->with("platforms:website_type:{$websiteType->value}", \Mockery::any(), \Mockery::any())
                 ->once()
                 ->andReturnUsing(function ($key, $ttl, $callback) {
                     return $callback();
@@ -247,7 +249,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_empty_collection_for_no_platforms(): void
+    public function itReturnsEmptyCollectionForNoPlatforms(): void
     {
         $emptyCollection = new Collection([]);
 
@@ -258,7 +260,7 @@ class PlatformServiceTest extends TestCase
             ->andReturn($emptyCollection);
 
         Cache::shouldReceive('remember')
-            ->with('platforms:website_type:portfolio', Mockery::any(), Mockery::any())
+            ->with('platforms:website_type:portfolio', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
                 return $callback();
@@ -272,7 +274,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_uses_proper_cache_keys(): void
+    public function itUsesProperCacheKeys(): void
     {
         $platforms = new Collection([
             new Platform(['id' => 1, 'name' => 'Test Platform', 'slug' => 'test']),
@@ -285,10 +287,11 @@ class PlatformServiceTest extends TestCase
             ->andReturn($platforms);
 
         Cache::shouldReceive('remember')
-            ->with('platforms:website_type:ecommerce', Mockery::any(), Mockery::any())
+            ->with('platforms:website_type:ecommerce', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
                 $this->assertEquals('platforms:website_type:ecommerce', $key);
+
                 return $callback();
             });
 
@@ -296,7 +299,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_uses_proper_cache_key_for_all_active(): void
+    public function itUsesProperCacheKeyForAllActive(): void
     {
         $platforms = new Collection([
             new Platform(['id' => 1, 'name' => 'Test Platform', 'slug' => 'test']),
@@ -308,10 +311,11 @@ class PlatformServiceTest extends TestCase
             ->andReturn($platforms);
 
         Cache::shouldReceive('remember')
-            ->with('platforms:all_active', Mockery::any(), Mockery::any())
+            ->with('platforms:all_active', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
                 $this->assertEquals('platforms:all_active', $key);
+
                 return $callback();
             });
 
@@ -319,31 +323,31 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_repository_dependency_injection(): void
+    public function itHandlesRepositoryDependencyInjection(): void
     {
         $this->assertInstanceOf(PlatformRepositoryInterface::class, $this->platformRepository);
     }
 
     /** @test */
-    public function it_uses_proper_method_signatures(): void
+    public function itUsesProperMethodSignatures(): void
     {
         $reflection = new \ReflectionClass($this->platformService);
-        
+
         $getByWebsiteTypeMethod = $reflection->getMethod('getPlatformsForWebsiteType');
         $this->assertEquals('getPlatformsForWebsiteType', $getByWebsiteTypeMethod->getName());
         $this->assertEquals(1, $getByWebsiteTypeMethod->getNumberOfRequiredParameters());
-        
+
         $getAllActiveMethod = $reflection->getMethod('getAllActivePlatforms');
         $this->assertEquals('getAllActivePlatforms', $getAllActiveMethod->getName());
         $this->assertEquals(0, $getAllActiveMethod->getNumberOfRequiredParameters());
-        
+
         $findBySlugMethod = $reflection->getMethod('findPlatformBySlug');
         $this->assertEquals('findPlatformBySlug', $findBySlugMethod->getName());
         $this->assertEquals(1, $findBySlugMethod->getNumberOfRequiredParameters());
     }
 
     /** @test */
-    public function it_handles_cache_miss_gracefully(): void
+    public function itHandlesCacheMissGracefully(): void
     {
         $platforms = new Collection([
             new Platform(['id' => 1, 'name' => 'Shopify', 'slug' => 'shopify']),
@@ -356,7 +360,7 @@ class PlatformServiceTest extends TestCase
             ->andReturn($platforms);
 
         Cache::shouldReceive('remember')
-            ->with('platforms:website_type:ecommerce', Mockery::any(), Mockery::any())
+            ->with('platforms:website_type:ecommerce', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturnUsing(function ($key, $ttl, $callback) {
                 // Simulate cache miss by directly calling the callback
@@ -370,7 +374,7 @@ class PlatformServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_cache_hit_without_database_call(): void
+    public function itHandlesCacheHitWithoutDatabaseCall(): void
     {
         $cachedPlatforms = new Collection([
             new Platform(['id' => 1, 'name' => 'Cached Platform', 'slug' => 'cached']),
@@ -380,7 +384,7 @@ class PlatformServiceTest extends TestCase
             ->shouldNotReceive('getByWebsiteType');
 
         Cache::shouldReceive('remember')
-            ->with('platforms:website_type:ecommerce', Mockery::any(), Mockery::any())
+            ->with('platforms:website_type:ecommerce', \Mockery::any(), \Mockery::any())
             ->once()
             ->andReturn($cachedPlatforms);
 
@@ -390,4 +394,4 @@ class PlatformServiceTest extends TestCase
         $this->assertCount(1, $result);
         $this->assertEquals('Cached Platform', $result->first()->name);
     }
-} 
+}

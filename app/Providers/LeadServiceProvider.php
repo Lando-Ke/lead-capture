@@ -19,17 +19,15 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * Service provider for binding lead-related interfaces to implementations.
- * 
+ *
  * This provider handles the registration of all lead-related bindings including
- * repositories and services, keeping the AppServiceProvider clean and following 
+ * repositories and services, keeping the AppServiceProvider clean and following
  * single responsibility principle.
  */
 final class LeadServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     * 
-     * @return void
      */
     public function register(): void
     {
@@ -39,8 +37,6 @@ final class LeadServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap services.
-     * 
-     * @return void
      */
     public function boot(): void
     {
@@ -49,7 +45,7 @@ final class LeadServiceProvider extends ServiceProvider
 
     /**
      * Configure rate limiters for lead-related operations.
-     * 
+     *
      * Implements intelligent rate limiting that considers both IP and user identity
      * for better security and user experience.
      */
@@ -72,7 +68,7 @@ final class LeadServiceProvider extends ServiceProvider
                                 'limit_type' => 'user',
                             ], 429);
                         }),
-                    
+
                     // Fallback IP limit for additional protection
                     Limit::perMinute(15)
                         ->by('ip:' . $request->ip())
@@ -113,29 +109,25 @@ final class LeadServiceProvider extends ServiceProvider
 
     /**
      * Register repository interface bindings.
-     * 
-     * @return void
      */
     private function registerRepositoryBindings(): void
     {
         // Lead repository bindings
         $this->app->bind(LeadRepositoryInterface::class, LeadRepository::class);
-        
+
         // Platform repository bindings
         $this->app->bind(PlatformRepositoryInterface::class, PlatformRepository::class);
     }
 
     /**
      * Register service interface bindings.
-     * 
-     * @return void
      */
     private function registerServiceBindings(): void
     {
         // Lead service bindings
         $this->app->bind(LeadServiceInterface::class, LeadService::class);
-        
+
         // Platform service bindings
         $this->app->bind(PlatformServiceInterface::class, PlatformService::class);
     }
-} 
+}

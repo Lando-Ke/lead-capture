@@ -1,10 +1,12 @@
 <?php
+
 // app/Models/Lead.php
+
 namespace App\Models;
 
 use App\Enums\WebsiteType;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Lead extends Model
@@ -45,4 +47,4 @@ class Lead extends Model
     {
         return $this->website_type === WebsiteType::ECOMMERCE;
     }
-} 
+}

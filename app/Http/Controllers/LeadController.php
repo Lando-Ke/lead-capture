@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Controller for handling lead operations.
- * 
+ *
  * Manages lead creation, validation, and retrieval with proper
  * error handling and response formatting.
  */
@@ -23,12 +23,14 @@ final class LeadController extends Controller
 {
     public function __construct(
         private readonly LeadServiceInterface $leadService
-    ) {}
+    ) {
+    }
 
     /**
      * Store a newly created lead.
-     * 
+     *
      * @param StoreLeadRequest $request The validated request
+     *
      * @return JsonResponse The response with lead data or error
      */
     public function store(StoreLeadRequest $request): JsonResponse
@@ -36,7 +38,7 @@ final class LeadController extends Controller
         try {
             $leadDTO = LeadDTO::fromArray($request->validated());
             $lead = $this->leadService->createLead($leadDTO);
-            
+
             // Load the platform relationship if it exists
             $lead->load('platform');
 
@@ -45,14 +47,12 @@ final class LeadController extends Controller
                 'message' => 'Lead submitted successfully',
                 'data' => new LeadResource($lead),
             ], 201);
-
         } catch (LeadAlreadyExistsException $e) {
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
                 'error_code' => 'LEAD_EXISTS',
             ], 409);
-
         } catch (\Exception $e) {
             Log::error('Lead submission error', [
                 'error' => $e->getMessage(),
@@ -70,9 +70,10 @@ final class LeadController extends Controller
 
     /**
      * Check if a lead exists with the given email.
-     * 
+     *
      * @param Request $request The request instance
-     * @param string $email The email to check
+     * @param string  $email   The email to check
+     *
      * @return JsonResponse The response with existence status
      */
     public function checkEmail(Request $request, string $email): JsonResponse
@@ -88,4 +89,4 @@ final class LeadController extends Controller
             'submitted_at' => $lead?->submitted_at?->toISOString(),
         ]);
     }
-} 
+}

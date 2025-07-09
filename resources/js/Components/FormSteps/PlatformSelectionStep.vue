@@ -1,7 +1,9 @@
 <template>
   <div class="space-y-6">
     <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">Platform Selection</h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+        Platform Selection
+      </h2>
       <p v-if="websiteType === 'ecommerce'" class="text-gray-600">
         Select the e-commerce platform you're using or planning to use.
       </p>
@@ -27,7 +29,7 @@
       
       <!-- Loading State -->
       <div v-if="isLoading" class="flex items-center justify-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
         <span class="ml-2 text-gray-600">Loading platforms...</span>
       </div>
       
@@ -73,8 +75,12 @@
         <div class="text-gray-400 mb-4">
           <ExclamationTriangleIcon class="w-16 h-16 mx-auto" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">No Platforms Available</h3>
-        <p class="text-gray-600">We couldn't load the available platforms. Please try again.</p>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">
+          No Platforms Available
+        </h3>
+        <p class="text-gray-600">
+          We couldn't load the available platforms. Please try again.
+        </p>
         <button
           type="button"
           class="mt-4 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
@@ -84,7 +90,9 @@
         </button>
       </div>
       
-      <p v-if="errors.platform_id" class="mt-2 text-sm text-red-600">{{ errors.platform_id[0] }}</p>
+      <p v-if="errors.platform_id" class="mt-2 text-sm text-red-600">
+        {{ errors.platform_id[0] }}
+      </p>
     </div>
 
     <!-- No Website Type Selected -->
@@ -92,7 +100,9 @@
       <div class="text-gray-400 mb-4">
         <ExclamationTriangleIcon class="w-16 h-16 mx-auto" />
       </div>
-      <h3 class="text-lg font-medium text-gray-900 mb-2">Website Type Required</h3>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">
+        Website Type Required
+      </h3>
       <p class="text-gray-600">
         Please go back and select a website type to see available platforms.
       </p>
@@ -129,7 +139,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { ChevronLeftIcon, ChevronRightIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline'
+import { ChevronLeftIcon, ChevronRightIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 import { useLeadStore } from '@/stores/leadStore'
 import { usePlatformStore } from '@/stores/platformStore'
 
@@ -171,17 +181,6 @@ const canProceed = computed(() => {
 // Methods
 const getWebsiteTypeLabel = (websiteType) => {
   return platformStore.getWebsiteTypeLabel(websiteType)
-}
-
-const getPlatformIcon = (websiteType) => {
-  const icons = {
-    'ecommerce': '🛍️',
-    'blog': '📝',
-    'business': '🏢',
-    'portfolio': '🎨',
-    'other': '🔍'
-  }
-  return icons[websiteType] || '🔍'
 }
 
 const handlePlatformChange = (platformId) => {

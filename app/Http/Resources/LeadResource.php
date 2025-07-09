@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Resource for transforming lead data for API responses.
- * 
+ *
  * Provides consistent formatting for lead data with proper
  * field transformation and additional metadata.
  */
@@ -19,6 +19,7 @@ final class LeadResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param Request $request The request instance
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -49,4 +50,4 @@ final class LeadResource extends JsonResource
             'updated_at' => $this->updated_at?->toISOString(),
         ];
     }
-} 
+}

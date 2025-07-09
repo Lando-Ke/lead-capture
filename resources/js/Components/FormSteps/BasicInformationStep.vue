@@ -1,8 +1,12 @@
 <template>
   <div class="space-y-6">
     <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">Basic Information</h2>
-      <p class="text-gray-600">Let's start with some basic information about you and your company.</p>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+        Basic Information
+      </h2>
+      <p class="text-gray-600">
+        Let's start with some basic information about you and your company.
+      </p>
     </div>
 
     <div class="grid grid-cols-1 gap-6">
@@ -21,7 +25,9 @@
           @input="handleFieldUpdate('name', $event.target.value)"
           @blur="validateField('name')"
         >
-        <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name[0] }}</p>
+        <p v-if="errors.name" class="mt-1 text-sm text-red-600">
+          {{ errors.name[0] }}
+        </p>
       </div>
 
       <!-- Email Address -->
@@ -39,7 +45,9 @@
           @input="handleFieldUpdate('email', $event.target.value)"
           @blur="handleEmailBlur"
         >
-        <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email[0] }}</p>
+        <p v-if="errors.email" class="mt-1 text-sm text-red-600">
+          {{ errors.email[0] }}
+        </p>
         <p v-if="emailWarning" class="mt-1 text-sm text-amber-600 flex items-center">
           <ExclamationTriangleIcon class="h-4 w-4 mr-1" />
           {{ emailWarning }}
@@ -61,7 +69,9 @@
           @input="handleFieldUpdate('company', $event.target.value)"
           @blur="validateField('company')"
         >
-        <p v-if="errors.company" class="mt-1 text-sm text-red-600">{{ errors.company[0] }}</p>
+        <p v-if="errors.company" class="mt-1 text-sm text-red-600">
+          {{ errors.company[0] }}
+        </p>
       </div>
 
       <!-- Website URL -->
@@ -79,8 +89,12 @@
           @input="handleFieldUpdate('website_url', $event.target.value)"
           @blur="validateField('website_url')"
         >
-        <p v-if="errors.website_url" class="mt-1 text-sm text-red-600">{{ errors.website_url[0] }}</p>
-        <p class="mt-1 text-xs text-gray-500">If you have an existing website, please share the URL so we can review it.</p>
+        <p v-if="errors.website_url" class="mt-1 text-sm text-red-600">
+          {{ errors.website_url[0] }}
+        </p>
+        <p class="mt-1 text-xs text-gray-500">
+          If you have an existing website, please share the URL so we can review it.
+        </p>
       </div>
     </div>
 
@@ -132,12 +146,12 @@ const formData = computed(() => leadStore.formData)
 
 const canProceed = computed(() => {
   return formData.value.name && 
-         formData.value.email && 
-         formData.value.company &&
-         leadStore.validateEmail(formData.value.email) &&
-         !props.errors.name &&
-         !props.errors.email &&
-         !props.errors.company
+    formData.value.email && 
+    formData.value.company &&
+    leadStore.validateEmail(formData.value.email) &&
+    !props.errors.name &&
+    !props.errors.email &&
+    !props.errors.company
 })
 
 // Methods
@@ -150,28 +164,28 @@ const validateField = (field) => {
   const value = formData.value[field]
   
   switch (field) {
-    case 'name':
-      if (!value || value.trim().length < 2) {
-        leadStore.setError(field, 'Your full name must be at least 2 characters.')
-      }
-      break
-    case 'email':
-      if (!value) {
-        leadStore.setError(field, 'Your email address is required.')
-      } else if (!leadStore.validateEmail(value)) {
-        leadStore.setError(field, 'Please provide a valid email address.')
-      }
-      break
-    case 'company':
-      if (!value || value.trim().length < 2) {
-        leadStore.setError(field, 'Your company name must be at least 2 characters.')
-      }
-      break
-    case 'website_url':
-      if (value && !isValidUrl(value)) {
-        leadStore.setError(field, 'Please provide a valid website URL.')
-      }
-      break
+  case 'name':
+    if (!value || value.trim().length < 2) {
+      leadStore.setError(field, 'Your full name must be at least 2 characters.')
+    }
+    break
+  case 'email':
+    if (!value) {
+      leadStore.setError(field, 'Your email address is required.')
+    } else if (!leadStore.validateEmail(value)) {
+      leadStore.setError(field, 'Please provide a valid email address.')
+    }
+    break
+  case 'company':
+    if (!value || value.trim().length < 2) {
+      leadStore.setError(field, 'Your company name must be at least 2 characters.')
+    }
+    break
+  case 'website_url':
+    if (value && !isValidUrl(value)) {
+      leadStore.setError(field, 'Please provide a valid website URL.')
+    }
+    break
   }
 }
 

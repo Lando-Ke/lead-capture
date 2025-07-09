@@ -1,5 +1,7 @@
 <?php
+
 // database/seeders/PlatformSeeder.php
+
 namespace Database\Seeders;
 
 use App\DTOs\PlatformDTO;
@@ -8,8 +10,8 @@ use App\Models\Platform;
 use Illuminate\Database\Seeder;
 
 /**
- * Platform Seeder
- * 
+ * Platform Seeder.
+ *
  * Seeds the platforms table with platform data for all website types.
  */
 class PlatformSeeder extends Seeder
@@ -21,7 +23,7 @@ class PlatformSeeder extends Seeder
     {
         // Clear existing platforms first
         Platform::truncate();
-        
+
         $platforms = $this->getPlatformData();
 
         foreach ($platforms as $platformData) {
@@ -31,8 +33,8 @@ class PlatformSeeder extends Seeder
     }
 
     /**
-     * Get platform seed data for all website types
-     * 
+     * Get platform seed data for all website types.
+     *
      * @return array<int, array<string, mixed>>
      */
     private function getPlatformData(): array
@@ -71,7 +73,7 @@ class PlatformSeeder extends Seeder
                 'website_types' => [WebsiteType::ECOMMERCE->value],
                 'sort_order' => 4,
             ],
-            
+
             // Blog platforms
             [
                 'name' => 'WordPress',
@@ -105,7 +107,7 @@ class PlatformSeeder extends Seeder
                 'website_types' => [WebsiteType::BLOG->value],
                 'sort_order' => 13,
             ],
-            
+
             // Business platforms
             [
                 'name' => 'Wix',
@@ -131,7 +133,7 @@ class PlatformSeeder extends Seeder
                 'website_types' => [WebsiteType::BUSINESS->value, WebsiteType::PORTFOLIO->value],
                 'sort_order' => 22,
             ],
-            
+
             // Portfolio platforms
             [
                 'name' => 'Behance',
@@ -157,7 +159,7 @@ class PlatformSeeder extends Seeder
                 'website_types' => [WebsiteType::PORTFOLIO->value],
                 'sort_order' => 32,
             ],
-            
+
             // Generic/Other platforms
             [
                 'name' => 'Custom Development',
@@ -169,7 +171,7 @@ class PlatformSeeder extends Seeder
                     WebsiteType::BLOG->value,
                     WebsiteType::BUSINESS->value,
                     WebsiteType::PORTFOLIO->value,
-                    WebsiteType::OTHER->value
+                    WebsiteType::OTHER->value,
                 ],
                 'sort_order' => 100,
             ],
@@ -183,10 +185,10 @@ class PlatformSeeder extends Seeder
                     WebsiteType::BLOG->value,
                     WebsiteType::BUSINESS->value,
                     WebsiteType::PORTFOLIO->value,
-                    WebsiteType::OTHER->value
+                    WebsiteType::OTHER->value,
                 ],
                 'sort_order' => 101,
             ],
         ];
     }
-} 
+}

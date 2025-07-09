@@ -1,16 +1,18 @@
 <?php
+
 // app/Repositories/LeadRepository.php
+
 namespace App\Repositories;
 
 use App\Contracts\LeadRepositoryInterface;
 use App\DTOs\LeadDTO;
 use App\Models\Lead;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
- * Lead Repository Implementation
- * 
+ * Lead Repository Implementation.
+ *
  * Handles lead data persistence operations.
  */
 final class LeadRepository implements LeadRepositoryInterface
@@ -44,4 +46,4 @@ final class LeadRepository implements LeadRepositoryInterface
             ->orderBy('submitted_at', 'desc')
             ->get();
     }
-} 
+}

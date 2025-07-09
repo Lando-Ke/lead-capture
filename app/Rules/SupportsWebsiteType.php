@@ -2,19 +2,18 @@
 
 namespace App\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
-use App\Models\Platform;
 use App\Enums\WebsiteType;
+use App\Models\Platform;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class SupportsWebsiteType implements ValidationRule
 {
     /**
      * Run the validation rule.
      *
-     * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */
-    public function validate(string $attribute, mixed $value, Closure $fail): void
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
     {
         if ($value === null) {
             return;
@@ -29,7 +28,7 @@ class SupportsWebsiteType implements ValidationRule
 
         // Get the website_type from the request
         $websiteType = request()->get('website_type');
-        
+
         if (!$websiteType) {
             return;
         }

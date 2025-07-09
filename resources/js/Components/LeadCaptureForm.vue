@@ -2,8 +2,12 @@
   <div class="max-w-4xl mx-auto">
     <!-- Header -->
     <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-4">Get Started with Your Project</h1>
-      <p class="text-gray-600">Fill out this form to tell us about your project needs. We'll get back to you within 24 hours with a personalized consultation.</p>
+      <h1 class="text-3xl font-bold text-gray-900 mb-4">
+        Get Started with Your Project
+      </h1>
+      <p class="text-gray-600">
+        Fill out this form to tell us about your project needs. We'll get back to you within 24 hours with a personalized consultation.
+      </p>
     </div>
 
     <!-- Progress Indicator -->
@@ -18,7 +22,7 @@
           <div 
             class="bg-gray-900 h-2 rounded-full transition-all duration-300 ease-in-out"
             :style="{ width: `${((currentStep + 1) / steps.length) * 100}%` }"
-          ></div>
+          />
         </div>
         <div class="mt-2 text-center">
           <span class="text-sm font-medium text-gray-900">{{ steps[currentStep].title }}</span>
@@ -40,8 +44,8 @@
                 index < currentStep
                   ? 'bg-gray-900 border-gray-900 text-white'
                   : index === currentStep
-                  ? 'bg-white border-gray-900 text-gray-900'
-                  : 'bg-gray-100 border-gray-300 text-gray-400'
+                    ? 'bg-white border-gray-900 text-gray-900'
+                    : 'bg-gray-100 border-gray-300 text-gray-400'
               ]"
             >
               <CheckIcon v-if="index < currentStep" class="w-5 h-5" />
@@ -127,8 +131,10 @@
     >
       <div class="flex items-center">
         <ExclamationTriangleIcon class="h-5 w-5 text-red-400 mr-2" />
-        <p class="text-sm text-red-800">{{ leadStore.errors.general[0] }}</p>
-        <button @click="leadStore.clearError('general')" class="ml-2 text-red-400 hover:text-red-600">
+        <p class="text-sm text-red-800">
+          {{ leadStore.errors.general[0] }}
+        </p>
+        <button class="ml-2 text-red-400 hover:text-red-600" @click="leadStore.clearError('general')">
           <XMarkIcon class="h-4 w-4" />
         </button>
       </div>

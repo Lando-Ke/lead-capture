@@ -1,8 +1,12 @@
 <template>
   <div class="space-y-6">
     <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">Website Details</h2>
-      <p class="text-gray-600">Tell us about the type of website you're looking to build or improve.</p>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+        Website Details
+      </h2>
+      <p class="text-gray-600">
+        Tell us about the type of website you're looking to build or improve.
+      </p>
     </div>
 
     <div>
@@ -41,7 +45,9 @@
         </div>
       </div>
       
-      <p v-if="errors.website_type" class="mt-2 text-sm text-red-600">{{ errors.website_type[0] }}</p>
+      <p v-if="errors.website_type" class="mt-2 text-sm text-red-600">
+        {{ errors.website_type[0] }}
+      </p>
     </div>
 
     <!-- Navigation -->

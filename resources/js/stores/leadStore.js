@@ -58,10 +58,11 @@ export const useLeadStore = defineStore('lead', () => {
         return formData.value.website_type
       case 2: // Platform Selection
         return formData.value.website_type && formData.value.platform_id
-      case 3: // Review & Submit
+      case 3: { // Review & Submit
         const basicValid = formData.value.name && formData.value.email && formData.value.company && formData.value.website_type
         const platformValid = formData.value.platform_id
         return basicValid && platformValid
+      }
       default:
         return false
     }

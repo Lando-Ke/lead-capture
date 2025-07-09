@@ -1,5 +1,7 @@
 <?php
+
 // app/Repositories/PlatformRepository.php
+
 namespace App\Repositories;
 
 use App\Contracts\PlatformRepositoryInterface;
@@ -8,8 +10,8 @@ use App\Models\Platform;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- * Platform Repository Implementation
- * 
+ * Platform Repository Implementation.
+ *
  * Handles platform data retrieval operations.
  */
 final class PlatformRepository implements PlatformRepositoryInterface
@@ -35,4 +37,4 @@ final class PlatformRepository implements PlatformRepositoryInterface
             ->active()
             ->first();
     }
-} 
+}

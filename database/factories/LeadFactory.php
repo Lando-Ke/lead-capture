@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\WebsiteType;
 use App\Models\Lead;
 use App\Models\Platform;
-use App\Enums\WebsiteType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -37,7 +37,7 @@ class LeadFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             $platform = Platform::factory()->ecommerce()->create();
-            
+
             return [
                 'website_type' => WebsiteType::ECOMMERCE,
                 'platform_id' => $platform->id,
@@ -87,11 +87,11 @@ class LeadFactory extends Factory
     /**
      * Indicate that the lead has a specific platform.
      */
-    public function withPlatform(Platform $platform = null): static
+    public function withPlatform(?Platform $platform = null): static
     {
         return $this->state(function (array $attributes) use ($platform) {
             $platform = $platform ?: Platform::factory()->create();
-            
+
             return [
                 'platform_id' => $platform->id,
                 'website_type' => WebsiteType::ECOMMERCE,

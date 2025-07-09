@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Http\Controllers\ApiDocumentationController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PlatformController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,12 +38,11 @@ Route::get('/openapi', [ApiDocumentationController::class, 'openapi'])
 
 // API v1 Routes
 Route::prefix('v1')->name('api.v1.')->group(function () {
-    
     // Platform routes - Public (used for form options) with caching
     Route::prefix('platforms')->name('platforms.')->middleware('api.cache:platforms')->group(function () {
         Route::get('/', [PlatformController::class, 'index'])
             ->name('index');
-        
+
         Route::get('/{slug}', [PlatformController::class, 'show'])
             ->name('show')
             ->whereAlphaNumeric('slug');
@@ -54,7 +52,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::prefix('leads')->name('leads.')->middleware('throttle:leads')->group(function () {
         Route::post('/', [LeadController::class, 'store'])
             ->name('store');
-        
+
         Route::get('/{email}/check', [LeadController::class, 'checkEmail'])
             ->name('check-email')
             ->middleware('throttle:email-check')
@@ -65,7 +63,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::prefix('form')->name('form.')->middleware('api.cache:form-options')->group(function () {
         Route::get('/options', function () {
             return response()->json([
-                'website_types' => collect(\App\Enums\WebsiteType::cases())->map(fn($type) => [
+                'website_types' => collect(App\Enums\WebsiteType::cases())->map(fn ($type) => [
                     'value' => $type->value,
                     'label' => $type->label(),
                     'description' => $type->description(),
@@ -95,4 +93,4 @@ Route::fallback(function () {
         'available_versions' => ['v1'],
         'documentation' => url('/api/documentation'),
     ], 404);
-}); 
+});

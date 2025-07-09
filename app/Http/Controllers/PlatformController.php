@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Controller for handling platform operations.
- * 
+ *
  * Manages platform retrieval and filtering with proper
  * error handling and response formatting.
  */
@@ -21,19 +21,21 @@ final class PlatformController extends Controller
 {
     public function __construct(
         private readonly PlatformServiceInterface $platformService
-    ) {}
+    ) {
+    }
 
     /**
      * Get all active platforms, optionally filtered by website type.
-     * 
+     *
      * @param Request $request The HTTP request
+     *
      * @return JsonResponse The response with platform data
      */
     public function index(Request $request): JsonResponse
     {
         try {
             $websiteType = $request->query('type');
-            
+
             if ($websiteType) {
                 // Validate website type
                 try {
@@ -44,7 +46,7 @@ final class PlatformController extends Controller
                         'message' => 'Invalid website type provided',
                         'error_code' => 'INVALID_WEBSITE_TYPE',
                         'meta' => [
-                            'valid_types' => collect(WebsiteType::cases())->map(fn($type) => [
+                            'valid_types' => collect(WebsiteType::cases())->map(fn ($type) => [
                                 'value' => $type->value,
                                 'label' => $type->label(),
                             ])->toArray(),
@@ -53,7 +55,7 @@ final class PlatformController extends Controller
                 }
 
                 $platforms = $this->platformService->getPlatformsForWebsiteType($websiteTypeEnum);
-                
+
                 return response()->json([
                     'success' => true,
                     'data' => PlatformResource::collection($platforms),
@@ -69,7 +71,7 @@ final class PlatformController extends Controller
                 ]);
             } else {
                 $platforms = $this->platformService->getAllActivePlatforms();
-                
+
                 return response()->json([
                     'success' => true,
                     'data' => PlatformResource::collection($platforms),
@@ -78,7 +80,6 @@ final class PlatformController extends Controller
                     ],
                 ]);
             }
-
         } catch (\Exception $e) {
             Log::error('Platform retrieval error', [
                 'error' => $e->getMessage(),
@@ -96,8 +97,9 @@ final class PlatformController extends Controller
 
     /**
      * Get a specific platform by slug.
-     * 
+     *
      * @param string $slug The platform slug
+     *
      * @return JsonResponse The response with platform data
      */
     public function show(string $slug): JsonResponse
@@ -117,7 +119,6 @@ final class PlatformController extends Controller
                 'success' => true,
                 'data' => new PlatformResource($platform),
             ]);
-
         } catch (\Exception $e) {
             Log::error('Platform retrieval error', [
                 'error' => $e->getMessage(),
@@ -132,4 +133,4 @@ final class PlatformController extends Controller
             ], 500);
         }
     }
-} 
+}

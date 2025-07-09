@@ -11,7 +11,7 @@ use Tests\TestCase;
 class LeadDTOTest extends TestCase
 {
     /** @test */
-    public function it_can_be_instantiated_with_all_properties(): void
+    public function itCanBeInstantiatedWithAllProperties(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -31,7 +31,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_instantiated_with_minimal_properties(): void
+    public function itCanBeInstantiatedWithMinimalProperties(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -51,7 +51,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_created_from_array(): void
+    public function itCanBeCreatedFromArray(): void
     {
         $data = [
             'name' => 'John Doe',
@@ -73,7 +73,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_created_from_array_with_nullable_fields(): void
+    public function itCanBeCreatedFromArrayWithNullableFields(): void
     {
         $data = [
             'name' => 'John Doe',
@@ -92,7 +92,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_converted_to_array(): void
+    public function itCanBeConvertedToArray(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -116,7 +116,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_converted_to_array_with_null_values(): void
+    public function itCanBeConvertedToArrayWithNullValues(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -140,7 +140,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_different_website_types(): void
+    public function itHandlesDifferentWebsiteTypes(): void
     {
         $websiteTypes = [
             WebsiteType::ECOMMERCE,
@@ -167,7 +167,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_is_immutable(): void
+    public function itIsImmutable(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -188,7 +188,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_platform_for_ecommerce(): void
+    public function itHandlesPlatformForEcommerce(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -204,7 +204,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_platform_for_non_ecommerce(): void
+    public function itHandlesPlatformForNonEcommerce(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -220,7 +220,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_serialized_to_json(): void
+    public function itCanBeSerializedToJson(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -243,7 +243,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_null_values_correctly(): void
+    public function itHandlesNullValuesCorrectly(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -260,7 +260,7 @@ class LeadDTOTest extends TestCase
     }
 
     /** @test */
-    public function it_preserves_data_types(): void
+    public function itPreservesDataTypes(): void
     {
         $dto = new LeadDTO(
             name: 'John Doe',
@@ -278,4 +278,4 @@ class LeadDTOTest extends TestCase
         $this->assertInstanceOf(WebsiteType::class, $dto->websiteType);
         $this->assertIsInt($dto->platform);
     }
-} 
+}

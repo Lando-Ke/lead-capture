@@ -1,21 +1,26 @@
 <template>
   <div class="space-y-6">
     <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">Review & Submit</h2>
-      <p class="text-gray-600">Please review your information before submitting.</p>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+        Review & Submit
+      </h2>
+      <p class="text-gray-600">
+        Please review your information before submitting.
+      </p>
     </div>
 
     <div class="space-y-6">
       <!-- Basic Information -->
       <div class="bg-gray-50 rounded-lg p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-medium text-gray-900">Basic Information</h3>
+          <h3 class="text-lg font-medium text-gray-900">
+            Basic Information
+          </h3>
           <button
             type="button"
-            @click="$emit('edit', 0)"
-            class="text-sm text-gray-600 hover:text-gray-900 flex items-center transition-colors duration-200"
+            class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 font-medium"
+            @click="emit('edit', 0)"
           >
-            <PencilIcon class="w-4 h-4 mr-1" />
             Edit
           </button>
         </div>
@@ -23,19 +28,27 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
             <span class="text-gray-500">Name</span>
-            <p class="font-medium">{{ formData.name || 'Not provided' }}</p>
+            <p class="font-medium">
+              {{ formData.name || 'Not provided' }}
+            </p>
           </div>
           <div>
             <span class="text-gray-500">Email</span>
-            <p class="font-medium">{{ formData.email || 'Not provided' }}</p>
+            <p class="font-medium">
+              {{ formData.email || 'Not provided' }}
+            </p>
           </div>
           <div>
             <span class="text-gray-500">Company</span>
-            <p class="font-medium">{{ formData.company || 'Not provided' }}</p>
+            <p class="font-medium">
+              {{ formData.company || 'Not provided' }}
+            </p>
           </div>
           <div>
             <span class="text-gray-500">Website URL</span>
-            <p class="font-medium">{{ formData.website_url || 'Not provided' }}</p>
+            <p class="font-medium">
+              {{ formData.website_url || 'Not provided' }}
+            </p>
           </div>
         </div>
       </div>
@@ -43,13 +56,14 @@
       <!-- Website Details -->
       <div class="bg-gray-50 rounded-lg p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-medium text-gray-900">Website Details</h3>
+          <h3 class="text-lg font-medium text-gray-900">
+            Website Details
+          </h3>
           <button
             type="button"
-            @click="$emit('edit', 1)"
-            class="text-sm text-gray-600 hover:text-gray-900 flex items-center transition-colors duration-200"
+            class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 font-medium"
+            @click="emit('edit', 1)"
           >
-            <PencilIcon class="w-4 h-4 mr-1" />
             Edit
           </button>
         </div>
@@ -58,22 +72,27 @@
           <span class="text-gray-500">Website Type</span>
           <div class="flex items-center mt-1">
             <span class="text-lg mr-2">{{ getWebsiteTypeIcon(formData.website_type) }}</span>
-            <p class="font-medium">{{ getWebsiteTypeLabel(formData.website_type) }}</p>
+            <p class="font-medium">
+              {{ getWebsiteTypeLabel(formData.website_type) }}
+            </p>
           </div>
-          <p class="text-gray-600 mt-1">{{ getWebsiteTypeDescription(formData.website_type) }}</p>
+          <p class="text-gray-600 mt-1">
+            {{ getWebsiteTypeDescription(formData.website_type) }}
+          </p>
         </div>
       </div>
 
       <!-- Platform -->
       <div v-if="formData.website_type && formData.platform_id" class="bg-gray-50 rounded-lg p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-medium text-gray-900">Platform</h3>
+          <h3 class="text-lg font-medium text-gray-900">
+            Platform
+          </h3>
           <button
             type="button"
-            @click="$emit('edit', 2)"
-            class="text-sm text-gray-600 hover:text-gray-900 flex items-center transition-colors duration-200"
+            class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 font-medium"
+            @click="emit('edit', 2)"
           >
-            <PencilIcon class="w-4 h-4 mr-1" />
             Edit
           </button>
         </div>
@@ -87,7 +106,9 @@
               class="w-5 h-5 mr-2 object-contain"
               @error="handleImageError"
             >
-            <p class="font-medium">{{ getPlatformLabel(formData.platform_id) }}</p>
+            <p class="font-medium">
+              {{ getPlatformLabel(formData.platform_id) }}
+            </p>
           </div>
         </div>
       </div>
@@ -114,7 +135,7 @@
       <button
         type="button"
         class="flex items-center px-6 py-3 rounded-lg text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
-        @click="$emit('previous')"
+        @click="emit('previous')"
       >
         <ChevronLeftIcon class="w-4 h-4 mr-2" />
         Previous
@@ -129,10 +150,10 @@
             ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         ]"
-        @click="$emit('submit')"
+        @click="emit('submit')"
       >
         <div v-if="isSubmitting" class="flex items-center">
-          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
           Submitting...
         </div>
         <div v-else class="flex items-center">
@@ -147,13 +168,25 @@
       <div class="flex items-start">
         <ExclamationTriangleIcon class="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" />
         <div class="text-sm">
-          <h4 class="text-red-800 font-medium">Please complete the following:</h4>
+          <h4 class="text-red-800 font-medium">
+            Please complete the following:
+          </h4>
           <ul class="mt-2 text-red-700 list-disc list-inside space-y-1">
-            <li v-if="!formData.name">Full name is required</li>
-            <li v-if="!formData.email">Email address is required</li>
-            <li v-if="!formData.company">Company name is required</li>
-            <li v-if="!formData.website_type">Website type selection is required</li>
-            <li v-if="formData.website_type && !formData.platform_id">Platform selection is required</li>
+            <li v-if="!formData.name">
+              Full name is required
+            </li>
+            <li v-if="!formData.email">
+              Email address is required
+            </li>
+            <li v-if="!formData.company">
+              Company name is required
+            </li>
+            <li v-if="!formData.website_type">
+              Website type selection is required
+            </li>
+            <li v-if="formData.website_type && !formData.platform_id">
+              Platform selection is required
+            </li>
           </ul>
         </div>
       </div>
@@ -163,13 +196,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { 
-  ChevronLeftIcon, 
-  CheckIcon, 
-  PencilIcon, 
-  InformationCircleIcon, 
-  ExclamationTriangleIcon 
-} from '@heroicons/vue/24/outline'
+import { ChevronLeftIcon, CheckIcon, InformationCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 
 // Props
 const props = defineProps({
@@ -188,7 +215,7 @@ const props = defineProps({
 })
 
 // Emits
-const emit = defineEmits(['edit', 'submit', 'previous'])
+const emit = defineEmits(['edit', 'previous', 'submit'])
 
 // Computed
 const canSubmit = computed(() => {

@@ -5,23 +5,22 @@ declare(strict_types=1);
 namespace App\DTOs;
 
 use App\Enums\WebsiteType;
-use InvalidArgumentException;
 
 /**
- * Lead Data Transfer Object
- * 
+ * Lead Data Transfer Object.
+ *
  * Immutable value object representing lead submission data.
  * Handles data validation and transformation between request/database layers.
  */
 final class LeadDTO
 {
     /**
-     * @param string $name Full name of the lead
-     * @param string $email Email address of the lead  
-     * @param string|null $company Company name (optional)
-     * @param string|null $websiteUrl Website URL (optional)
+     * @param string      $name        Full name of the lead
+     * @param string      $email       Email address of the lead
+     * @param string|null $company     Company name (optional)
+     * @param string|null $websiteUrl  Website URL (optional)
      * @param WebsiteType $websiteType Type of website (enum)
-     * @param int|null $platform Platform ID for e-commerce sites (foreign key)
+     * @param int|null    $platform    Platform ID for e-commerce sites (foreign key)
      */
     public function __construct(
         public readonly string $name,
@@ -37,11 +36,11 @@ final class LeadDTO
     }
 
     /**
-     * Create DTO instance from array data (typically from request)
-     * 
+     * Create DTO instance from array data (typically from request).
+     *
      * @param array<string, mixed> $data
-     * @return self
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public static function fromArray(array $data): self
     {
@@ -50,14 +49,14 @@ final class LeadDTO
             email: self::validateRequired($data, 'email'),
             company: $data['company'] ?? null,
             websiteUrl: $data['website_url'] ?? null,
-            websiteType: WebsiteType::from($data['website_type'] ?? throw new InvalidArgumentException('website_type is required')),
+            websiteType: WebsiteType::from($data['website_type'] ?? throw new \InvalidArgumentException('website_type is required')),
             platform: isset($data['platform_id']) ? (int) $data['platform_id'] : null
         );
     }
 
     /**
-     * Convert DTO to array for database storage
-     * 
+     * Convert DTO to array for database storage.
+     *
      * @return array<string, mixed>
      */
     public function toArray(): array
@@ -73,8 +72,8 @@ final class LeadDTO
     }
 
     /**
-     * Convert DTO to array for API responses
-     * 
+     * Convert DTO to array for API responses.
+     *
      * @return array<string, mixed>
      */
     public function toApiArray(): array
@@ -93,7 +92,7 @@ final class LeadDTO
     }
 
     /**
-     * Check if this lead requires a platform selection
+     * Check if this lead requires a platform selection.
      */
     public function requiresPlatform(): bool
     {
@@ -101,57 +100,56 @@ final class LeadDTO
     }
 
     /**
-     * Validate required field exists and is not empty
-     * 
+     * Validate required field exists and is not empty.
+     *
      * @param array<string, mixed> $data
-     * @param string $field
-     * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     private static function validateRequired(array $data, string $field): string
     {
         $value = $data[$field] ?? null;
-        
+
         if (empty($value) || !is_string($value)) {
-            throw new InvalidArgumentException("Field '{$field}' is required and must be a non-empty string");
+            throw new \InvalidArgumentException("Field '{$field}' is required and must be a non-empty string");
         }
-        
+
         return trim($value);
     }
 
     /**
-     * Validate email format
-     * 
-     * @throws InvalidArgumentException
+     * Validate email format.
+     *
+     * @throws \InvalidArgumentException
      */
     private function validateEmail(string $email): void
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException("Invalid email format: {$email}");
+            throw new \InvalidArgumentException("Invalid email format: {$email}");
         }
     }
 
     /**
-     * Validate website URL format if provided
-     * 
-     * @throws InvalidArgumentException
+     * Validate website URL format if provided.
+     *
+     * @throws \InvalidArgumentException
      */
     private function validateWebsiteUrl(?string $url): void
     {
         if ($url !== null && !filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new InvalidArgumentException("Invalid website URL format: {$url}");
+            throw new \InvalidArgumentException("Invalid website URL format: {$url}");
         }
     }
 
     /**
-     * Validate platform requirement based on website type
-     * 
-     * @throws InvalidArgumentException
+     * Validate platform requirement based on website type.
+     *
+     * @throws \InvalidArgumentException
      */
     private function validatePlatformRequirement(): void
     {
         if ($this->requiresPlatform() && $this->platform === null) {
-            throw new InvalidArgumentException('Platform selection is required for e-commerce websites');
+            throw new \InvalidArgumentException('Platform selection is required for e-commerce websites');
         }
     }
-} 
+}

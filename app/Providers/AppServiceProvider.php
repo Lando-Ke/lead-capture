@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
         // 3. Easier Testing: Can register different implementations per provider
         // 4. Scalability: As the app grows, feature-specific providers keep things organized
         // 5. Clarity: Makes dependencies and their purposes more explicit
-        
+
         // All lead-related bindings are now handled by LeadServiceProvider
     }
 
@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
-        
+
         // Note: Rate limiting configuration has been moved to LeadServiceProvider
         // to follow the single responsibility principle - each provider handles
         // its own domain-specific configurations.

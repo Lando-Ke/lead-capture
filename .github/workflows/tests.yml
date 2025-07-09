@@ -130,7 +130,7 @@ jobs:
       run: vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes
 
     - name: Run ESLint
-      run: npm run lint
+      run: npm run lint -- --max-warnings 10
 
     - name: Run Prettier Check
       run: npm run format:check

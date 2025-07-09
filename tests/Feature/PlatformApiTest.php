@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * Test suite for Platform API endpoints
+ * Test suite for Platform API endpoints.
  */
 class PlatformApiTest extends TestCase
 {
@@ -19,7 +19,7 @@ class PlatformApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create comprehensive test platforms
         Platform::factory()->create([
             'name' => 'Shopify',
@@ -72,7 +72,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_all_active_platforms(): void
+    public function itCanFetchAllActivePlatforms(): void
     {
         $response = $this->getJson('/api/v1/platforms');
 
@@ -99,7 +99,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_platforms_in_sort_order(): void
+    public function itReturnsPlatformsInSortOrder(): void
     {
         $response = $this->getJson('/api/v1/platforms');
 
@@ -114,7 +114,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_platforms_by_ecommerce_type(): void
+    public function itCanFetchPlatformsByEcommerceType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=ecommerce');
 
@@ -158,7 +158,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_platforms_by_blog_type(): void
+    public function itCanFetchPlatformsByBlogType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=blog');
 
@@ -181,7 +181,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_platforms_by_business_type(): void
+    public function itCanFetchPlatformsByBusinessType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=business');
 
@@ -193,7 +193,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_platforms_by_portfolio_type(): void
+    public function itCanFetchPlatformsByPortfolioType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=portfolio');
 
@@ -205,7 +205,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_empty_array_for_other_website_type(): void
+    public function itReturnsEmptyArrayForOtherWebsiteType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=other');
 
@@ -222,7 +222,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_validates_invalid_website_type(): void
+    public function itValidatesInvalidWebsiteType(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=invalid');
 
@@ -248,7 +248,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_platform_by_slug(): void
+    public function itCanFetchPlatformBySlug(): void
     {
         $response = $this->getJson('/api/v1/platforms/shopify');
 
@@ -272,7 +272,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_404_for_non_existent_platform_slug(): void
+    public function itReturns404ForNonExistentPlatformSlug(): void
     {
         $response = $this->getJson('/api/v1/platforms/nonexistent');
 
@@ -285,7 +285,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_404_for_inactive_platform_slug(): void
+    public function itReturns404ForInactivePlatformSlug(): void
     {
         $response = $this->getJson('/api/v1/platforms/inactive');
 
@@ -298,7 +298,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_applies_proper_cache_headers_to_platform_endpoints(): void
+    public function itAppliesProperCacheHeadersToPlatformEndpoints(): void
     {
         $response = $this->getJson('/api/v1/platforms');
 
@@ -312,29 +312,29 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_applies_cache_headers_to_platform_with_query_params(): void
+    public function itAppliesCacheHeadersToPlatformWithQueryParams(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=ecommerce');
 
         $response->assertStatus(200)
             ->assertHeader('X-Cache-Strategy', 'platforms');
-            
+
         $this->assertCacheControlContains($response, ['public', 'max-age=3600', 'stale-while-revalidate=1800']);
     }
 
     /** @test */
-    public function it_applies_cache_headers_to_platform_by_slug(): void
+    public function itAppliesCacheHeadersToPlatformBySlug(): void
     {
         $response = $this->getJson('/api/v1/platforms/shopify');
 
         $response->assertStatus(200)
             ->assertHeader('X-Cache-Strategy', 'platforms');
-            
+
         $this->assertCacheControlContains($response, ['public', 'max-age=3600', 'stale-while-revalidate=1800']);
     }
 
     /** @test */
-    public function it_returns_platforms_with_multiple_website_types(): void
+    public function itReturnsPlatformsWithMultipleWebsiteTypes(): void
     {
         $response = $this->getJson('/api/v1/platforms/wordpress');
 
@@ -346,7 +346,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_filters_platforms_correctly_for_mixed_website_types(): void
+    public function itFiltersPlatformsCorrectlyForMixedWebsiteTypes(): void
     {
         // Test that WordPress appears in both blog and business filters
         $blogResponse = $this->getJson('/api/v1/platforms?type=blog');
@@ -365,7 +365,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_respects_platform_sort_order(): void
+    public function itRespectsPlatformSortOrder(): void
     {
         // Update sort orders to test
         Platform::where('slug', 'wordpress')->update(['sort_order' => 1]);
@@ -383,7 +383,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_only_returns_active_platforms_in_filtered_results(): void
+    public function itOnlyReturnsActivePlatformsInFilteredResults(): void
     {
         $response = $this->getJson('/api/v1/platforms?type=ecommerce');
 
@@ -395,7 +395,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_concurrent_requests_properly(): void
+    public function itHandlesConcurrentRequestsProperly(): void
     {
         $responses = [];
 
@@ -412,7 +412,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_consistent_platform_data_structure(): void
+    public function itReturnsConsistentPlatformDataStructure(): void
     {
         $response = $this->getJson('/api/v1/platforms');
 
@@ -425,7 +425,7 @@ class PlatformApiTest extends TestCase
             $this->assertArrayHasKey('slug', $platform);
             $this->assertArrayHasKey('description', $platform);
             $this->assertArrayHasKey('website_types', $platform);
-            
+
             $this->assertIsInt($platform['id']);
             $this->assertIsString($platform['name']);
             $this->assertIsString($platform['slug']);
@@ -435,7 +435,7 @@ class PlatformApiTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_empty_platform_results_gracefully(): void
+    public function itHandlesEmptyPlatformResultsGracefully(): void
     {
         // Delete all platforms to test empty results
         Platform::query()->delete();
@@ -462,8 +462,11 @@ class PlatformApiTest extends TestCase
         $this->assertNotNull($cacheControl, 'Cache-Control header is missing');
 
         foreach ($expectedDirectives as $directive) {
-            $this->assertStringContainsString($directive, $cacheControl, 
-                "Cache-Control header '$cacheControl' does not contain '$directive'");
+            $this->assertStringContainsString(
+                $directive,
+                $cacheControl,
+                "Cache-Control header '$cacheControl' does not contain '$directive'"
+            );
         }
     }
-} 
+}

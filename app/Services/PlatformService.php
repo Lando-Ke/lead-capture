@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * Service for handling platform business logic.
- * 
+ *
  * Manages platform retrieval, caching, and website type filtering
  * with proper cache invalidation strategies.
  */
@@ -24,18 +24,20 @@ final class PlatformService implements PlatformServiceInterface
 
     public function __construct(
         private readonly PlatformRepositoryInterface $platformRepository
-    ) {}
+    ) {
+    }
 
     /**
      * Get platforms filtered by website type with caching.
-     * 
+     *
      * @param WebsiteType $websiteType The website type to filter by
+     *
      * @return Collection<int, Platform> Collection of platforms
      */
     public function getPlatformsForWebsiteType(WebsiteType $websiteType): Collection
     {
         $cacheKey = self::CACHE_KEY_PREFIX . ":website_type:{$websiteType->value}";
-        
+
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($websiteType) {
             return $this->platformRepository->getByWebsiteType($websiteType);
         });
@@ -43,13 +45,13 @@ final class PlatformService implements PlatformServiceInterface
 
     /**
      * Get all active platforms with caching.
-     * 
+     *
      * @return Collection<int, Platform> Collection of active platforms
      */
     public function getAllActivePlatforms(): Collection
     {
         $cacheKey = self::CACHE_KEY_PREFIX . ':all_active';
-        
+
         return Cache::remember($cacheKey, self::CACHE_TTL, function () {
             return $this->platformRepository->getAllActive();
         });
@@ -57,14 +59,15 @@ final class PlatformService implements PlatformServiceInterface
 
     /**
      * Find a platform by slug.
-     * 
+     *
      * @param string $slug The platform slug to search for
+     *
      * @return Platform|null The found platform or null if not found
      */
     public function findPlatformBySlug(string $slug): ?Platform
     {
         $cacheKey = self::CACHE_KEY_PREFIX . ":slug:{$slug}";
-        
+
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($slug) {
             return $this->platformRepository->findBySlug($slug);
         });
@@ -72,20 +75,18 @@ final class PlatformService implements PlatformServiceInterface
 
     /**
      * Clear cached platform data.
-     * 
-     * @return void
      */
     public function clearPlatformCache(): void
     {
         // Clear all platform-related cache keys
         Cache::forget(self::CACHE_KEY_PREFIX . ':all_active');
-        
+
         // Clear website type specific caches
         foreach (WebsiteType::cases() as $websiteType) {
             Cache::forget(self::CACHE_KEY_PREFIX . ":website_type:{$websiteType->value}");
         }
-        
+
         // Note: Individual slug caches would need to be cleared when platforms are modified
         // This could be improved with cache tags if using Redis
     }
-} 
+}

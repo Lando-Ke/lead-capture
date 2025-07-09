@@ -7,20 +7,20 @@ namespace App\DTOs;
 use App\Enums\WebsiteType;
 
 /**
- * Platform Data Transfer Object
- * 
+ * Platform Data Transfer Object.
+ *
  * Lightweight immutable value object for platform data.
  * Designed for read operations and seeding.
  */
 final class PlatformDTO
 {
     /**
-     * @param string $name Platform display name
-     * @param string $slug URL-friendly identifier
-     * @param string|null $description Platform description
-     * @param string|null $logo Path to platform logo
+     * @param string        $name         Platform display name
+     * @param string        $slug         URL-friendly identifier
+     * @param string|null   $description  Platform description
+     * @param string|null   $logo         Path to platform logo
      * @param array<string> $websiteTypes Supported website types
-     * @param int $sortOrder Display order
+     * @param int           $sortOrder    Display order
      */
     public function __construct(
         public readonly string $name,
@@ -29,11 +29,12 @@ final class PlatformDTO
         public readonly ?string $logo,
         public readonly array $websiteTypes,
         public readonly int $sortOrder = 0
-    ) {}
+    ) {
+    }
 
     /**
-     * Create DTO from array data
-     * 
+     * Create DTO from array data.
+     *
      * @param array<string, mixed> $data
      */
     public static function fromArray(array $data): self
@@ -49,8 +50,8 @@ final class PlatformDTO
     }
 
     /**
-     * Convert to array for database operations
-     * 
+     * Convert to array for database operations.
+     *
      * @return array<string, mixed>
      */
     public function toArray(): array
@@ -67,10 +68,10 @@ final class PlatformDTO
     }
 
     /**
-     * Check if platform supports specific website type
+     * Check if platform supports specific website type.
      */
     public function supportsWebsiteType(WebsiteType $websiteType): bool
     {
         return in_array($websiteType->value, $this->websiteTypes, true);
     }
-} 
+}

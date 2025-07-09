@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Platform;
 use App\Enums\WebsiteType;
+use App\Models\Platform;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

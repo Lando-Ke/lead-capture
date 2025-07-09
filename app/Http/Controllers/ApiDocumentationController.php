@@ -6,19 +6,16 @@ namespace App\Http\Controllers;
 
 use App\Enums\WebsiteType;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 /**
  * Controller for API documentation endpoints.
- * 
+ *
  * Provides comprehensive documentation for all API endpoints in a structured format.
  */
 final class ApiDocumentationController extends Controller
 {
     /**
      * Get comprehensive API documentation.
-     *
-     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -53,8 +50,6 @@ final class ApiDocumentationController extends Controller
 
     /**
      * Get OpenAPI specification.
-     *
-     * @return JsonResponse
      */
     public function openapi(): JsonResponse
     {
@@ -80,8 +75,6 @@ final class ApiDocumentationController extends Controller
 
     /**
      * Get all API endpoints documentation.
-     *
-     * @return array
      */
     private function getEndpoints(): array
     {
@@ -111,7 +104,7 @@ final class ApiDocumentationController extends Controller
                         'in' => 'query',
                         'type' => 'string',
                         'required' => false,
-                        'enum' => collect(WebsiteType::cases())->map(fn($type) => $type->value)->toArray(),
+                        'enum' => collect(WebsiteType::cases())->map(fn ($type) => $type->value)->toArray(),
                         'description' => 'Filter platforms by website type. If provided, returns only platforms that support this website type.',
                     ],
                 ],
@@ -279,7 +272,7 @@ final class ApiDocumentationController extends Controller
                                     ],
                                     'website_type' => [
                                         'type' => 'string',
-                                        'enum' => collect(WebsiteType::cases())->map(fn($type) => $type->value)->toArray(),
+                                        'enum' => collect(WebsiteType::cases())->map(fn ($type) => $type->value)->toArray(),
                                         'description' => 'Type of website',
                                     ],
                                     'platform_id' => [
@@ -389,8 +382,6 @@ final class ApiDocumentationController extends Controller
 
     /**
      * Get data models documentation.
-     *
-     * @return array
      */
     private function getModels(): array
     {
@@ -423,15 +414,13 @@ final class ApiDocumentationController extends Controller
 
     /**
      * Get enums documentation.
-     *
-     * @return array
      */
     private function getEnums(): array
     {
         return [
             'WebsiteType' => [
                 'description' => 'Available website types',
-                'cases' => collect(WebsiteType::cases())->map(fn($type) => [
+                'cases' => collect(WebsiteType::cases())->map(fn ($type) => [
                     'value' => $type->value,
                     'label' => $type->label(),
                     'description' => $type->description(),
@@ -442,8 +431,6 @@ final class ApiDocumentationController extends Controller
 
     /**
      * Get usage examples.
-     *
-     * @return array
      */
     private function getExamples(): array
     {
@@ -581,8 +568,6 @@ final class ApiDocumentationController extends Controller
 
     /**
      * Get OpenAPI paths specification.
-     *
-     * @return array
      */
     private function getOpenApiPaths(): array
     {
@@ -622,8 +607,6 @@ final class ApiDocumentationController extends Controller
 
     /**
      * Get OpenAPI schemas.
-     *
-     * @return array
      */
     private function getOpenApiSchemas(): array
     {
@@ -636,7 +619,7 @@ final class ApiDocumentationController extends Controller
                     'email' => ['type' => 'string', 'format' => 'email', 'maxLength' => 255],
                     'company' => ['type' => 'string', 'minLength' => 2, 'maxLength' => 255],
                     'website_url' => ['type' => 'string', 'format' => 'url', 'maxLength' => 255],
-                    'website_type' => ['type' => 'string', 'enum' => collect(WebsiteType::cases())->map(fn($type) => $type->value)->toArray()],
+                    'website_type' => ['type' => 'string', 'enum' => collect(WebsiteType::cases())->map(fn ($type) => $type->value)->toArray()],
                     'platform_id' => ['type' => 'integer', 'description' => 'Required for all website types'],
                 ],
             ],
@@ -673,4 +656,4 @@ final class ApiDocumentationController extends Controller
             ],
         ];
     }
-} 
+}

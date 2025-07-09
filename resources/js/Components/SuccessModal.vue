@@ -5,7 +5,7 @@
       <div 
         class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
         @click="$emit('close')"
-      ></div>
+      />
       
       <!-- Modal content -->
       <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
@@ -30,7 +30,9 @@
         
         <!-- Submission Summary -->
         <div class="mt-6 bg-gray-50 rounded-lg p-4">
-          <h4 class="text-sm font-medium text-gray-900 mb-3">Submission Summary:</h4>
+          <h4 class="text-sm font-medium text-gray-900 mb-3">
+            Submission Summary:
+          </h4>
           <div class="space-y-2 text-sm text-gray-600">
             <div class="flex justify-between">
               <span class="font-medium">Name:</span> 
@@ -66,18 +68,20 @@
         
         <!-- Next Steps -->
         <div class="mt-6 bg-blue-50 rounded-lg p-4">
-          <h4 class="text-sm font-medium text-blue-900 mb-2">What happens next?</h4>
+          <h4 class="text-sm font-medium text-blue-900 mb-2">
+            What happens next?
+          </h4>
           <div class="space-y-2 text-sm text-blue-800">
             <div class="flex items-center">
-              <div class="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+              <div class="w-2 h-2 bg-blue-400 rounded-full mr-2" />
               <span>Our team will review your submission</span>
             </div>
             <div class="flex items-center">
-              <div class="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+              <div class="w-2 h-2 bg-blue-400 rounded-full mr-2" />
               <span>We'll prepare a personalized consultation</span>
             </div>
             <div class="flex items-center">
-              <div class="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+              <div class="w-2 h-2 bg-blue-400 rounded-full mr-2" />
               <span>You'll receive an email within 24 hours</span>
             </div>
           </div>
@@ -127,7 +131,7 @@ const props = defineProps({
 })
 
 // Emits
-const emit = defineEmits(['close'])
+defineEmits(['close'])
 
 // Methods
 const getWebsiteTypeLabel = (websiteType) => {

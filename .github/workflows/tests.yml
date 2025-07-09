@@ -57,6 +57,8 @@ jobs:
           # Add missing test environment variables
           echo "QUEUE_CONNECTION=sync" >> .env.testing
           echo "CACHE_DRIVER=array" >> .env.testing
+          # Create .env for commands that don't specify an environment
+          cp .env.testing .env
 
       - name: Generate application key
         run: php artisan key:generate --env=testing

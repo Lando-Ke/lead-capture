@@ -120,16 +120,19 @@
     </div>
 
     <!-- Success Modal -->
-    <SuccessModal 
-      v-if="showSuccess" 
-      :lead-data="submittedLead" 
+    <SuccessModal
+      v-if="showSuccess"
+      :lead-data="submittedLead"
       :notification-status="leadStore.notificationStatus"
-      @close="resetForm" 
+      @close="resetForm"
     />
 
     <!-- Validation Error Alert -->
     <div
-      v-if="leadStore.hasErrors && (leadStore.errors.email || leadStore.errors.name || leadStore.errors.company)"
+      v-if="
+        leadStore.hasErrors &&
+        (leadStore.errors.email || leadStore.errors.name || leadStore.errors.company)
+      "
       class="fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg z-50 max-w-md"
     >
       <div class="flex items-start">
@@ -253,11 +256,16 @@ const handleSubmit = async () => {
     }
   } catch {
     // Log error for debugging
-    
+
     // Navigate back to the appropriate step if there are field errors
     if (leadStore.hasErrors) {
       // Check which step has errors and navigate to the first one
-      if (leadStore.errors.name || leadStore.errors.email || leadStore.errors.company || leadStore.errors.website_url) {
+      if (
+        leadStore.errors.name ||
+        leadStore.errors.email ||
+        leadStore.errors.company ||
+        leadStore.errors.website_url
+      ) {
         currentStep.value = 0 // Basic Information step
       } else if (leadStore.errors.website_type) {
         currentStep.value = 1 // Website Details step

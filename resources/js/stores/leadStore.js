@@ -44,7 +44,7 @@ export const useLeadStore = defineStore('lead', () => {
     clearError(field)
   }
 
-  const setNotificationStatus = (status) => {
+  const setNotificationStatus = status => {
     console.log('📋 Setting notification status:', status)
     notificationStatus.value = status
   }
@@ -117,7 +117,7 @@ export const useLeadStore = defineStore('lead', () => {
 
     try {
       const response = await axios.post('/api/v1/leads', formData.value)
-      
+
       console.log('📋 Lead submission response received:', response.data)
 
       // Set notification status from API response
@@ -134,7 +134,7 @@ export const useLeadStore = defineStore('lead', () => {
       }
     } catch (error) {
       console.error('📋 Lead submission error:', error)
-      
+
       if (error.response?.status === 422) {
         // Validation errors - extract and set them
         const responseErrors = error.response.data.errors || {}
